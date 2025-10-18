@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "8f0XEwYUgbU=",
+  "success": true,
+  "projectFilePath": "/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Domain/OfisYonetimSistemi.Domain.csproj",
+  "expectedPackageFiles": [
+    "/Users/macbook/.nuget/packages/mediatr.contracts/2.0.1/mediatr.contracts.2.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}

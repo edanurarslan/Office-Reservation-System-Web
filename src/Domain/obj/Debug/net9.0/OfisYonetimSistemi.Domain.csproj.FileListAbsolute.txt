@@ -1,0 +1,13 @@
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Domain/bin/Debug/net9.0/OfisYonetimSistemi.Domain.deps.json
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Domain/bin/Debug/net9.0/OfisYonetimSistemi.Domain.dll
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Domain/bin/Debug/net9.0/OfisYonetimSistemi.Domain.pdb
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Domain/obj/Debug/net9.0/OfisYonetimSistemi.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Domain/obj/Debug/net9.0/OfisYonetimSistemi.Domain.AssemblyInfoInputs.cache
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Domain/obj/Debug/net9.0/OfisYonetimSistemi.Domain.AssemblyInfo.cs
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Domain/obj/Debug/net9.0/OfisYonetimSistemi.Domain.csproj.CoreCompileInputs.cache
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Domain/obj/Debug/net9.0/OfisYonetimSistemi.Domain.sourcelink.json
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Domain/obj/Debug/net9.0/OfisYonetimSistemi.Domain.dll
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Domain/obj/Debug/net9.0/refint/OfisYonetimSistemi.Domain.dll
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Domain/obj/Debug/net9.0/OfisYonetimSistemi.Domain.pdb
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Domain/obj/Debug/net9.0/ref/OfisYonetimSistemi.Domain.dll
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Domain/obj/Debug/net9.0/OfisYonetimSistemi.Domain.csproj.AssemblyReference.cache

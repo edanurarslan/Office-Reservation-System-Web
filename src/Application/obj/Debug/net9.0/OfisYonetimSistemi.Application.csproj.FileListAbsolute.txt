@@ -1,0 +1,16 @@
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Application/bin/Debug/net9.0/OfisYonetimSistemi.Application.deps.json
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Application/bin/Debug/net9.0/OfisYonetimSistemi.Application.dll
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Application/bin/Debug/net9.0/OfisYonetimSistemi.Application.pdb
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Application/obj/Debug/net9.0/OfisYonetimSistemi.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Application/obj/Debug/net9.0/OfisYonetimSistemi.Application.AssemblyInfoInputs.cache
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Application/obj/Debug/net9.0/OfisYonetimSistemi.Application.AssemblyInfo.cs
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Application/obj/Debug/net9.0/OfisYonetimSistemi.Application.csproj.CoreCompileInputs.cache
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Application/obj/Debug/net9.0/OfisYonetimSistemi.Application.sourcelink.json
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Application/obj/Debug/net9.0/OfisYonetimSistemi.Application.dll
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Application/obj/Debug/net9.0/refint/OfisYonetimSistemi.Application.dll
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Application/obj/Debug/net9.0/OfisYonetimSistemi.Application.pdb
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Application/obj/Debug/net9.0/ref/OfisYonetimSistemi.Application.dll
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Application/bin/Debug/net9.0/OfisYonetimSistemi.Domain.dll
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Application/bin/Debug/net9.0/OfisYonetimSistemi.Domain.pdb
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Application/obj/Debug/net9.0/OfisYonetimSistemi.Application.csproj.AssemblyReference.cache
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/Application/obj/Debug/net9.0/OfisYone.047FC90C.Up2Date

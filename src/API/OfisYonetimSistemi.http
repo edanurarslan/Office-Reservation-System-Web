@@ -1,0 +1,6 @@
+@OfisYonetimSistemi_HostAddress = http://localhost:5088
+
+GET {{OfisYonetimSistemi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

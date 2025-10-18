@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "LlQJHGyF3kc=",
+  "success": true,
+  "projectFilePath": "/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/OfisYonetimSistemi.csproj",
+  "expectedPackageFiles": [
+    "/Users/macbook/.nuget/packages/microsoft.aspnetcore.openapi/9.0.9/microsoft.aspnetcore.openapi.9.0.9.nupkg.sha512",
+    "/Users/macbook/.nuget/packages/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
