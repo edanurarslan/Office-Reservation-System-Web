@@ -2,3 +2,30 @@
 2025-10-18 20:09:23.073 +03:00 [WRN] Entity 'User' has a global query filter defined and is the required end of a relationship with the entity 'QrToken'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
 2025-10-18 20:09:23.073 +03:00 [WRN] Entity 'Location' has a global query filter defined and is the required end of a relationship with the entity 'Room'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
 2025-10-18 20:09:23.075 +03:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2025-10-18 20:25:03.277 +03:00 [INF] User profile is available. Using '/Users/macbook/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-10-18 20:25:03.341 +03:00 [INF] Now listening on: http://localhost:5088
+2025-10-18 20:25:03.342 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-18 20:25:03.342 +03:00 [INF] Hosting environment: Development
+2025-10-18 20:25:03.342 +03:00 [INF] Content root path: /Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/API
+2025-10-18 20:25:20.460 +03:00 [INF] Application is shutting down...
+2025-10-18 20:26:20.786 +03:00 [INF] User profile is available. Using '/Users/macbook/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-10-18 20:26:20.844 +03:00 [INF] Now listening on: http://localhost:5088
+2025-10-18 20:26:20.845 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-18 20:26:20.845 +03:00 [INF] Hosting environment: Development
+2025-10-18 20:26:20.845 +03:00 [INF] Content root path: /Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/API
+2025-10-18 20:26:58.731 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5088/health - null null
+2025-10-18 20:26:58.744 +03:00 [WRN] Failed to determine the https port for redirect.
+2025-10-18 20:26:58.764 +03:00 [INF] Executing endpoint 'Health checks'
+2025-10-18 20:26:58.991 +03:00 [WRN] Entity 'User' has a global query filter defined and is the required end of a relationship with the entity 'CheckIn'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2025-10-18 20:26:58.992 +03:00 [WRN] Entity 'User' has a global query filter defined and is the required end of a relationship with the entity 'QrToken'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2025-10-18 20:26:58.992 +03:00 [WRN] Entity 'Location' has a global query filter defined and is the required end of a relationship with the entity 'Room'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2025-10-18 20:26:58.993 +03:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2025-10-18 20:26:59.068 +03:00 [ERR] Health check database with status "Unhealthy" completed after 250.8003ms with message 'null'
+2025-10-18 20:26:59.078 +03:00 [INF] Executed endpoint 'Health checks'
+2025-10-18 20:26:59.079 +03:00 [ERR] HTTP GET /health responded 503 in 337.3343 ms
+2025-10-18 20:26:59.080 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5088/health - 503 null text/plain 349.7401ms
+2025-10-18 20:26:59.121 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5088/favicon.ico - null null
+2025-10-18 20:26:59.122 +03:00 [INF] HTTP GET /favicon.ico responded 404 in 0.6172 ms
+2025-10-18 20:26:59.123 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5088/favicon.ico - 404 0 null 1.6467ms
+2025-10-18 20:26:59.123 +03:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5088/favicon.ico, Response status code: 404
+2025-10-18 20:28:58.800 +03:00 [INF] Application is shutting down...

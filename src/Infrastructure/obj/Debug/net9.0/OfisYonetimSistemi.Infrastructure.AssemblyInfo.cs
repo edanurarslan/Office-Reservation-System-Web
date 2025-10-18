@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OfisYonetimSistemi.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1bd07b698d7bdaede65e9566d8cafe5b4cfa0f27")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e0dea328771584cfab6b3a1ab2467907c72e7e41")]
 [assembly: System.Reflection.AssemblyProductAttribute("OfisYonetimSistemi.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OfisYonetimSistemi.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
