@@ -72,11 +72,6 @@ const LoginPage: React.FC = () => {
             {isLoading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
           </button>
         </form>
-        <div className="login-custom-demo">
-          <div><b>Demo Giriş Bilgileri</b></div>
-          <div>E-posta: <code>admin@ofis.com</code></div>
-          <div>Şifre: <code>Admin123!</code></div>
-        </div>
       </div>
     </div>
   );

@@ -26,8 +26,13 @@ interface AuthProviderProps {
   children: React.ReactNode;
 }
 
+
 const DEMO_AUTH_EMAIL = 'admin@ofis.com';
 const DEMO_AUTH_PASSWORD = 'Admin123!';
+const DEMO_USER_EMAIL = 'user@ofis.com';
+const DEMO_USER_PASSWORD = 'User123!';
+const DEMO_MANAGER_EMAIL = 'manager@ofis.com';
+const DEMO_MANAGER_PASSWORD = 'ofis123';
 
 const demoUser: User = {
   id: '11111111-1111-1111-1111-111111111111',
@@ -35,6 +40,28 @@ const demoUser: User = {
   lastName: 'User',
   email: DEMO_AUTH_EMAIL,
   role: 'Admin',
+  isActive: true,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
+
+const demoNormalUser: User = {
+  id: '22222222-2222-2222-2222-222222222222',
+  firstName: 'Normal',
+  lastName: 'User',
+  email: DEMO_USER_EMAIL,
+  role: 'Employee',
+  isActive: true,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
+
+const demoManagerUser: User = {
+  id: '33333333-3333-3333-3333-333333333333',
+  firstName: 'Manager',
+  lastName: 'User',
+  email: DEMO_MANAGER_EMAIL,
+  role: 'Manager',
   isActive: true,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
@@ -80,24 +107,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setIsLoading(true);
       const response = await apiService.login(credentials);
-      
       // Store token and user in localStorage
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
       localStorage.removeItem('authMode');
-      
       setUser(response.user);
     } catch (error: any) {
       console.error('Login error:', error);
 
-      const isDemoCredentials =
-        credentials.email === DEMO_AUTH_EMAIL && credentials.password === DEMO_AUTH_PASSWORD;
+      const isDemoAdmin = credentials.email === DEMO_AUTH_EMAIL && credentials.password === DEMO_AUTH_PASSWORD;
+      const isDemoUser = credentials.email === DEMO_USER_EMAIL && credentials.password === DEMO_USER_PASSWORD;
+      const isDemoManager = credentials.email === DEMO_MANAGER_EMAIL && credentials.password === DEMO_MANAGER_PASSWORD;
 
-      if (isDemoCredentials) {
+      if (isDemoAdmin) {
         localStorage.setItem('token', 'demo-token');
         localStorage.setItem('user', JSON.stringify(demoUser));
         localStorage.setItem('authMode', 'demo');
         setUser(demoUser);
+        return;
+      }
+      if (isDemoUser) {
+        localStorage.setItem('token', 'demo-token');
+        localStorage.setItem('user', JSON.stringify(demoNormalUser));
+        localStorage.setItem('authMode', 'demo');
+        setUser(demoNormalUser);
+        return;
+      }
+      if (isDemoManager) {
+        localStorage.setItem('token', 'demo-token');
+        localStorage.setItem('user', JSON.stringify(demoManagerUser));
+        localStorage.setItem('authMode', 'demo');
+        setUser(demoManagerUser);
         return;
       }
 

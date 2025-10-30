@@ -44,6 +44,21 @@ using (var scope = app.Services.CreateScope())
         });
         db.SaveChanges();
     }
+
+    // Seed manager user
+    if (!db.Users.Any(u => u.Email == "manager@ofis.com"))
+    {
+        db.Users.Add(new User
+        {
+            Email = "manager@ofis.com",
+            FirstName = "Manager",
+            LastName = "User",
+            Role = UserRole.Manager,
+            IsActive = true,
+            PasswordHash = "ofis123" // NOT SECURE: Replace with hash in production
+        });
+        db.SaveChanges();
+    }
 }
 
 app.Run();
