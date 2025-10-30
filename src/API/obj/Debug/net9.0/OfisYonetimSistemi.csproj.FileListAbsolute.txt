@@ -170,3 +170,6 @@
 /Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/API/obj/Debug/net9.0/OfisYonetimSistemi.pdb
 /Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/API/obj/Debug/net9.0/OfisYonetimSistemi.genruntimeconfig.cache
 /Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/API/obj/Debug/net9.0/ref/OfisYonetimSistemi.dll
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/API/bin/Debug/net9.0/Swashbuckle.AspNetCore.Swagger.dll
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/API/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/API/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerUI.dll

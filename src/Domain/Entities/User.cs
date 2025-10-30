@@ -15,7 +15,10 @@ public class User : BaseEntity
     public bool IsActive { get; set; } = true;
     public string? ExternalId { get; set; } // For OAuth integration
     public Guid? ManagerId { get; set; }
-    
+
+    // Password hash for authentication
+    public string PasswordHash { get; set; } = string.Empty;
+
     // Navigation properties
     public User? Manager { get; set; }
     public ICollection<User> Subordinates { get; set; } = new List<User>();

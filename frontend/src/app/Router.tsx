@@ -1,84 +1,68 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import LoginPage from '../pages/login/LoginPage';
 import RegisterPage from '../pages/login/RegisterPage';
+import Layout from '../components/common/Layout';
+import LoadingSpinner from '../components/common/LoadingSpinner';
 import DashboardPage from '../pages/my/DashboardPage';
 import ReservationsPage from '../pages/reserve/ReservationsPage';
 import ProfilePage from '../pages/my/ProfilePage';
-import Layout from '../components/common/Layout';
-import LoadingSpinner from '../components/common/LoadingSpinner';
+import QrPage from '../pages/qr/QrPage';
+import UsersPage from '../pages/admin/UsersPage';
+import LocationsPage from '../pages/admin/LocationsPage';
+import ReportsPage from '../pages/reports/ReportsPage';
 
-// Protected Route component
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ProtectedLayout: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
-  
+
   if (isLoading) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner className="min-h-screen" />;
   }
-  
-  return isAuthenticated ? <Layout>{children}</Layout> : <Navigate to="/login" replace />;
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return (
+    <Layout>
+      <Outlet />
+    </Layout>
+  );
 };
 
-// Public Route component (redirect to dashboard if authenticated)
-const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const PublicLayout: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
-  
+
   if (isLoading) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner className="min-h-screen" />;
   }
-  
-  return !isAuthenticated ? <>{children}</> : <Navigate to="/dashboard" replace />;
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <Outlet />;
 };
 
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      {/* Public routes */}
-      <Route 
-        path="/login" 
-        element={
-          <PublicRoute>
-            <LoginPage />
-          </PublicRoute>
-        } 
-      />
-      <Route 
-        path="/register" 
-        element={
-          <PublicRoute>
-            <RegisterPage />
-          </PublicRoute>
-        } 
-      />
-      
-      {/* Protected routes */}
-      <Route 
-        path="/dashboard" 
-        element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/reservations" 
-        element={
-          <ProtectedRoute>
-            <ReservationsPage />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/profile" 
-        element={
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        } 
-      />
-      
-      {/* Default redirect */}
+      <Route element={<PublicLayout />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Route>
+
+      <Route element={<ProtectedLayout />}>
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/reservations" element={<ReservationsPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/qr" element={<QrPage />} />
+        <Route path="/users" element={<UsersPage />} />
+        <Route path="/locations" element={<LocationsPage />} />
+        <Route path="/reports" element={<ReportsPage />} />
+      </Route>
+
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>

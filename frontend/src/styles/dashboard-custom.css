@@ -1,0 +1,60 @@
+body.dashboard-bg {
+  background: linear-gradient(120deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%);
+}
+
+.dashboard-glass {
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  backdrop-filter: blur(10px);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.18);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  animation: glassFadeIn 1s cubic-bezier(.4,0,.2,1);
+}
+
+@keyframes glassFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dashboard-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #6366f1;
+  text-align: left;
+  margin-bottom: 1.5rem;
+  letter-spacing: -1px;
+}
+
+.dashboard-card {
+  background: rgba(255,255,255,0.92);
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 16px rgba(99,102,241,0.10);
+  padding: 1.5rem;
+  transition: box-shadow 0.2s, transform 0.2s;
+  border: 1px solid #e0e7ff;
+}
+
+.dashboard-card:hover {
+  box-shadow: 0 8px 32px rgba(99,102,241,0.18);
+  transform: scale(1.03);
+}
+
+.dashboard-btn {
+  background: linear-gradient(90deg, #6366f1, #818cf8);
+  color: #fff;
+  border-radius: 1rem;
+  padding: 0.75rem 1.2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.15);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.dashboard-btn:hover {
+  background: linear-gradient(90deg, #818cf8, #6366f1);
+  transform: scale(1.04);
+}

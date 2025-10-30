@@ -1,19 +1,18 @@
 import React from 'react';
+import '../../styles/page-custom.css';
 
 const ReservationsPage: React.FC = () => {
   return (
-    <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow p-6">
-        <h1 className="text-2xl font-bold text-gray-900">Rezervasyonlar</h1>
-        <p className="text-gray-600 mt-1">
-          Rezervasyonlarınızı yönetin ve yeni rezervasyon oluşturun
-        </p>
-      </div>
-      
-      <div className="bg-white rounded-lg shadow p-6">
-        <p className="text-center text-gray-500">
-          Rezervasyon yönetimi yakında eklenecek...
-        </p>
+    <div className="page-center">
+      <div style={{width:'100%',maxWidth:600}}>
+        <div className="page-glass">
+          <div className="page-title">Rezervasyonlar</div>
+          <div style={{color:'#6366f1',fontWeight:500,marginBottom:'1.2rem'}}>Rezervasyonlarınızı yönetin ve yeni rezervasyon oluşturun</div>
+          <button className="page-btn" style={{marginBottom:'1.5rem'}}>Yeni Rezervasyon Oluştur</button>
+        </div>
+        <div className="page-glass">
+          <p style={{textAlign:'center',color:'#818cf8',fontWeight:500}}>Rezervasyon yönetimi yakında eklenecek...</p>
+        </div>
       </div>
     </div>
   );
