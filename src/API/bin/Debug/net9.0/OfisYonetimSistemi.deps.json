@@ -16,7 +16,8 @@
           "OfisYonetimSistemi.Infrastructure": "1.0.0",
           "QRCoder": "1.7.0",
           "Serilog.AspNetCore": "9.0.0",
-          "Swashbuckle.AspNetCore": "9.0.6"
+          "Swashbuckle.AspNetCore": "9.0.6",
+          "Swashbuckle.AspNetCore.Annotations": "9.0.6"
         },
         "runtime": {
           "OfisYonetimSistemi.dll": {}
@@ -910,6 +911,17 @@
           "Swashbuckle.AspNetCore.SwaggerUI": "9.0.6"
         }
       },
+      "Swashbuckle.AspNetCore.Annotations/9.0.6": {
+        "dependencies": {
+          "Swashbuckle.AspNetCore.SwaggerGen": "9.0.6"
+        },
+        "runtime": {
+          "lib/net9.0/Swashbuckle.AspNetCore.Annotations.dll": {
+            "assemblyVersion": "9.0.6.0",
+            "fileVersion": "9.0.6.1840"
+          }
+        }
+      },
       "Swashbuckle.AspNetCore.Swagger/9.0.6": {
         "dependencies": {
           "Microsoft.OpenApi": "1.6.25"
@@ -1553,6 +1565,13 @@
       "sha512": "sha512-q/UfEAgrk6qQyjHXgsW9ILw0YZLfmPtWUY4wYijliX6supozC+TkzU0G6FTnn/dPYxnChjM8g8lHjWHF6VKy+A==",
       "path": "swashbuckle.aspnetcore/9.0.6",
       "hashPath": "swashbuckle.aspnetcore.9.0.6.nupkg.sha512"
+    },
+    "Swashbuckle.AspNetCore.Annotations/9.0.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-NGrxo6pkPgzKGD0t6FalY57aWrwR6S2xNq1MJEK+R7rX5asZlEfFJLps8VapRjBKcYgTvyguAV1lDrgabF6Krg==",
+      "path": "swashbuckle.aspnetcore.annotations/9.0.6",
+      "hashPath": "swashbuckle.aspnetcore.annotations.9.0.6.nupkg.sha512"
     },
     "Swashbuckle.AspNetCore.Swagger/9.0.6": {
       "type": "package",

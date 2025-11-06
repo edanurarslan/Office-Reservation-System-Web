@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using OfisYonetimSistemi.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using OfisYonetimSistemi.Domain.Enums;
 using OfisYonetimSistemi.Infrastructure.Authentication;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace OfisYonetimSistemi.API.Controllers;
 
 [ApiController]
-[Route("api/v1/[controller]")]
+[Route("api/v1/auth")]
 public class AuthController : ControllerBase
 {
     private readonly IJwtTokenService _jwtTokenService;
@@ -16,40 +18,53 @@ public class AuthController : ControllerBase
         _jwtTokenService = jwtTokenService;
     }
 
-    [HttpPost("test-token")]
-    public IActionResult GenerateTestToken([FromBody] TestTokenRequest request)
-    {
-        // Create a test user
-        var testUser = new User
-        {
-            Id = Guid.NewGuid(),
-            Email = request.Email ?? "test@company.com",
-            FirstName = request.FirstName ?? "Test",
-            LastName = request.LastName ?? "User",
-            Role = request.Role ?? UserRole.Employee,
-            Department = "IT",
-            JobTitle = "Developer"
-        };
 
-        var token = _jwtTokenService.GenerateAccessToken(testUser);
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromServices] OfisYonetimSistemi.Infrastructure.Data.ApplicationDbContext db, [FromBody] LoginRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
+            return BadRequest(new { Error = "Email and password required" });
+
+        var user = await db.Users.FirstOrDefaultAsync(u => u.Email == request.Email && u.IsActive);
+        if (user == null)
+            return Unauthorized(new { Error = "Invalid credentials" });
+
+        // Basit hash kontrolü (gerçek sistemde hash karşılaştırması yapılmalı)
+        if (user.PasswordHash != request.Password)
+            return Unauthorized(new { Error = "Invalid credentials" });
+
+        var token = _jwtTokenService.GenerateAccessToken(user);
         var refreshToken = _jwtTokenService.GenerateRefreshToken();
 
         return Ok(new
         {
             AccessToken = token,
             RefreshToken = refreshToken,
-            ExpiresIn = 3600, // 1 hour
+            ExpiresIn = 3600,
             TokenType = "Bearer",
             User = new
             {
-                testUser.Id,
-                testUser.Email,
-                testUser.FirstName,
-                testUser.LastName,
-                testUser.Role,
-                testUser.Department,
-                testUser.JobTitle
+                user.Id,
+                user.Email,
+                user.FirstName,
+                user.LastName,
+                user.Role,
+                user.Department,
+                user.JobTitle
             }
+        });
+    }
+
+    [HttpPost("refresh-token")]
+    public IActionResult RefreshToken([FromBody] RefreshTokenRequest request)
+    {
+        // Gerçek sistemde refresh token doğrulama ve yeni access token üretimi yapılmalı
+        // Burada örnek olarak yeni bir access token dönülüyor
+        return Ok(new
+        {
+            AccessToken = _jwtTokenService.GenerateAccessToken(new User { Email = "demo@ofis.com", FirstName = "Demo", LastName = "User", Role = UserRole.Employee }),
+            ExpiresIn = 3600,
+            TokenType = "Bearer"
         });
     }
 
@@ -67,11 +82,8 @@ public class AuthController : ControllerBase
     }
 }
 
-public record TestTokenRequest(
-    string? Email = null,
-    string? FirstName = null,
-    string? LastName = null,
-    UserRole? Role = null
-);
+
+public record LoginRequest(string Email, string Password);
+public record RefreshTokenRequest(string RefreshToken);
 
 public record ValidateTokenRequest(string Token);

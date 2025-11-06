@@ -5,7 +5,7 @@ using OfisYonetimSistemi.Infrastructure.Authentication;
 namespace OfisYonetimSistemi.API.Controllers;
 
 [ApiController]
-[Route("api/v1/[controller]")]
+[Route("api/v1/health")]
 public class HealthController : ControllerBase
 {
     [HttpGet]

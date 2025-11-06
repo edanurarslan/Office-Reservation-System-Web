@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "BS4M/NgOTfQ=",
+  "dgSpecHash": "n/NzjKUMb00=",
   "success": true,
   "projectFilePath": "/Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi-.NET/src/API/OfisYonetimSistemi.csproj",
   "expectedPackageFiles": [
@@ -67,6 +67,7 @@
     "/Users/macbook/.nuget/packages/serilog.sinks.debug/3.0.0/serilog.sinks.debug.3.0.0.nupkg.sha512",
     "/Users/macbook/.nuget/packages/serilog.sinks.file/6.0.0/serilog.sinks.file.6.0.0.nupkg.sha512",
     "/Users/macbook/.nuget/packages/swashbuckle.aspnetcore/9.0.6/swashbuckle.aspnetcore.9.0.6.nupkg.sha512",
+    "/Users/macbook/.nuget/packages/swashbuckle.aspnetcore.annotations/9.0.6/swashbuckle.aspnetcore.annotations.9.0.6.nupkg.sha512",
     "/Users/macbook/.nuget/packages/swashbuckle.aspnetcore.swagger/9.0.6/swashbuckle.aspnetcore.swagger.9.0.6.nupkg.sha512",
     "/Users/macbook/.nuget/packages/swashbuckle.aspnetcore.swaggergen/9.0.6/swashbuckle.aspnetcore.swaggergen.9.0.6.nupkg.sha512",
     "/Users/macbook/.nuget/packages/swashbuckle.aspnetcore.swaggerui/9.0.6/swashbuckle.aspnetcore.swaggerui.9.0.6.nupkg.sha512",

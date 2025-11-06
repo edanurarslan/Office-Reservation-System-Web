@@ -80,6 +80,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[9.0.6, )"
+            },
+            "Swashbuckle.AspNetCore.Annotations": {
+              "target": "Package",
+              "version": "[9.0.6, )"
             }
           },
           "imports": [
