@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../styles/page-custom.css';
 
 const FloorplanPage: React.FC = () => {
   return (

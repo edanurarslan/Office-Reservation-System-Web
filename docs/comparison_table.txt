@@ -1,0 +1,137 @@
+┌──────────────────────────────────────────────────────────────────────────────┐
+│           OFİS YÖNETİM SİSTEMİ - ROLE KARŞILAŞTIRMASI VE YETKİLERİ           │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────┬──────────────────┬──────────────────┬──────────────────┐
+│    ÖZELLİK       │     EMPLOYEE     │     MANAGER      │      ADMIN       │
+├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
+│                  │                  │                  │                  │
+│ Giriş Yap        │        ✅        │        ✅        │        ✅        │
+│ Profil Güncelle  │   Sadece Kendi   │   Sadece Kendi   │   Tüm Kullanıcı  │
+│                  │                  │                  │                  │
+├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
+│ REZERVASYON      │                  │                  │                  │
+├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
+│ Masa Rezerve Et  │        ✅        │   Takımı İçin    │        ✅        │
+│ Oda Rezerve Et   │        ✅        │   Takımı İçin    │        ✅        │
+│ Rez. İptal Et    │ Kendi Rez. + 2h  │ Takımın Rez.     │   Tüm Rez.       │
+│ Rez. Onayla      │        ❌        │        ✅        │        ✅        │
+│ Rez. Reddet      │        ❌        │        ✅        │        ✅        │
+│ Availability     │        ✅        │        ✅        │        ✅        │
+│ Çakışma Kontrol  │   OTOMATİK       │   OTOMATİK       │   OTOMATİK       │
+│                  │                  │                  │                  │
+├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
+│ CHECK-IN/OUT     │                  │                  │                  │
+├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
+│ QR Kodu Tara     │        ✅        │        ✅        │        ✅        │
+│ Check-in Yap     │        ✅        │        ✅        │        ✅        │
+│ Check-out Yap    │        ✅        │        ✅        │        ✅        │
+│ Check-in Geçmiş  │ Kendi Rez.       │ Takımın Rez.     │   Tüm Rez.       │
+│                  │                  │                  │                  │
+├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
+│ LOKASYON/AYAR    │                  │                  │                  │
+├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
+│ Lokasyonları Gör │        ✅        │        ✅        │        ✅        │
+│ Lokasyon Ekle    │        ❌        │        ❌        │        ✅        │
+│ Lokasyon Sil     │        ❌        │        ❌        │        ✅        │
+│ Masa Ekle/Sil    │        ❌        │        ❌        │        ✅        │
+│ Oda Ekle/Sil     │        ❌        │        ❌        │        ✅        │
+│ Kural Ayarla     │        ❌        │        ❌        │        ✅        │
+│                  │                  │                  │                  │
+├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
+│ KULLANICI YÖNET  │                  │                  │                  │
+├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
+│ Kullanıcı Ekle   │        ❌        │        ❌        │        ✅        │
+│ Kullanıcı Sil    │        ❌        │        ❌        │        ✅        │
+│ Role Değiştir    │        ❌        │        ❌        │        ✅        │
+│ Takım Yönet      │        ❌        │        ✅        │        ✅        │
+│                  │                  │                  │                  │
+├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
+│ RAPORLAR         │                  │                  │                  │
+├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
+│ Kendi Rez. Rp.   │        ✅        │        ✅        │        ✅        │
+│ Takım Rp.        │        ❌        │        ✅        │        ✅        │
+│ Sistem Rp.       │        ❌        │        ❌        │        ✅        │
+│ PDF/CSV Export   │        ✅        │        ✅        │        ✅        │
+│                  │                  │                  │                  │
+├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
+│ DENETIM (LOGS)   │                  │                  │                  │
+├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
+│ Kendi Aktivite   │        ✅        │        ✅        │        ✅        │
+│ Takım Aktivite   │        ❌        │        ✅        │        ✅        │
+│ Sistem Aktivite  │        ❌        │        ❌        │        ✅        │
+│ Denetim Raporu   │        ❌        │        ❌        │        ✅        │
+│                  │                  │                  │                  │
+├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
+│ BİLDİRİMLER      │                  │                  │                  │
+├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
+│ Bildirim Al      │        ✅        │        ✅        │        ✅        │
+│ Bildirim Gönder  │   Sistem Otom.   │   Sistem Otom.   │   Sistem Otom.   │
+│ Bildirim Yönet   │   Kendi Bill.    │ Takım Bildiri.   │ Sistem Bildiri.  │
+│                  │                  │                  │                  │
+└──────────────────┴──────────────────┴──────────────────┴──────────────────┘
+
+DASHBOARD BILEŞENLERI KARŞILAŞTIRMASI:
+
+EMPLOYEE DASHBOARD             MANAGER DASHBOARD        ADMIN DASHBOARD
+═══════════════════════════   ═════════════════════    ═════════════════════
+Kişisel İstatistikler:        Takım İstatistikleri:    Sistem İstatistikleri:
+├─ Toplam Masalar             ├─ Toplam Takım Üyeleri  ├─ Toplam Kullanıcı
+├─ Müsait Masalar             ├─ Takım Rezervasyonları ├─ Toplam Lokasyon
+├─ Aktif Rez. Sayısı          ├─ Pending Onay Sayısı   ├─ Toplam Masa/Oda
+├─ Haftanın Dağılımı          ├─ Takım Aktiviteleri    ├─ Sistem Aktiviteleri
+│                             ├─ Peak Hours            ├─ Peak Hours
+Kişisel Rezervasyonlar:       ├─ Kullanım Oranları     ├─ Kullanım Oranları
+├─ Son Rezervasyonlar                                  ├─ Lokasyon Analizi
+├─ Yaklaşan Rez.              Pending Onaylar:         ├─ İstatistik Grafikleri
+├─ Geçmiş Rez.                ├─ Onay Bekleyen Rez.    ├─ Compliance Raporları
+│                             ├─ Reddet Seçeneği       ├─ Denetim Günlüğü
+Hızlı İşlemler:               ├─ Onayla Seçeneği       ├─ Sistem Raporları
+├─ Yeni Rez.                  │                        │
+├─ QR Tarama                  Raporlar:                Admin İşlemleri:
+├─ İstatistikler              ├─ Takım Raporları       ├─ Kullanıcı Yönetimi
+└─ Profil                     ├─ PDF Export            ├─ Lokasyon Yönetimi
+                              └─ CSV Export            ├─ Kural Yönetimi
+                                                       ├─ Denetim Günlüğü
+                                                       └─ Sistem Ayarları
+
+═══════════════════════════════════════════════════════════════════════════════
+
+API ENDPOINT ERİŞİM KONTROLLERI:
+
+┌────────────────────┬──────────────┬────────────┬──────────┐
+│     Endpoint       │  Employee    │  Manager   │  Admin   │
+├────────────────────┼──────────────┼────────────┼──────────┤
+│ /api/auth/*        │      ✅      │     ✅     │    ✅    │
+│ /api/users/{id}    │  Kendi Only  │ Kendi+Takım│  Tüm ✅  │
+│ /api/reservations  │  Kendi Rez.  │ Takım Rez. │  Tüm ✅  │
+│ /api/locations     │      ✅      │     ✅     │    ✅    │
+│ /api/desks         │      ✅      │     ✅     │    ✅    │
+│ /api/rooms         │      ✅      │     ✅     │    ✅    │
+│ /api/checkins      │      ✅      │     ✅     │    ✅    │
+│ /api/analytics     │      ✅      │  Takım ✅  │  Sistem ✅│
+│ /api/notifications │      ✅      │     ✅     │    ✅    │
+│ /api/logs          │  Kendi Only  │ Takım Logs │  Tüm ✅  │
+│ /api/rules         │      ❌      │     ❌     │    ✅    │
+└────────────────────┴──────────────┴────────────┴──────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+
+NOTIFICATION TYPES (Otomatik Gönderilen Bildirimler):
+
+EMPLOYEE'ye Gönderilen:           MANAGER'e Gönderilen:
+├─ Rez. Onaylandı                ├─ Yeni Pending Rez.
+├─ Rez. Reddedildi               ├─ Rez. Onay Kalıntısı
+├─ Rez. İptal Edildi             ├─ Takım Aktivitesi
+├─ Check-in Başarılı             ├─ Takım Rez. İptali
+├─ Check-out Başarılı            └─ Sistem Bildirimi
+├─ Rez. Değiştirildi             
+├─ Takım Davetiye                ADMIN'e Gönderilen:
+└─ Sistem Bildirimi              ├─ Sistem Aktivitesi
+                                 ├─ Hata Raporları
+                                 ├─ Lokasyon Değişiklikleri
+                                 ├─ Kulanıcı Ekleme/Silme
+                                 └─ Sistem Uyarıları
+
+═══════════════════════════════════════════════════════════════════════════════
+

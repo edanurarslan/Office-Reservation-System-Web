@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import '../../styles/page-custom.css';
 import { Pencil, Trash2, Plus } from 'lucide-react';
 
 type Rule = { id: string; text: string; type: 'Kural' | 'Duyuru' };

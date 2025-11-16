@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import '../../styles/page-custom.css';
 import { Send } from 'lucide-react';
 
 const mockRecipients = [
