@@ -1,23 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PageContainer, PageHeader, Table, PrimaryButton } from '../../widgets';
 import { Plus, Edit2, Trash2, MapPin } from 'lucide-react';
-
-interface Location {
-  id: string;
-  name: string;
-  floor: number;
-  totalDesks: number;
-  availableDesks: number;
-  type: 'desk' | 'room';
-}
+import apiService from '../../utils/services/api';
+import type { Location } from '../../types';
 
 const LocationsPage: React.FC = () => {
-  const [locations, setLocations] = useState<Location[]>([
-    { id: '1', name: 'A Bloğu - 1. Kat', floor: 1, totalDesks: 12, availableDesks: 5, type: 'desk' },
-    { id: '2', name: 'B Bloğu - 2. Kat', floor: 2, totalDesks: 8, availableDesks: 2, type: 'room' },
-    { id: '3', name: 'C Bloğu - Zemin Kat', floor: 0, totalDesks: 4, availableDesks: 1, type: 'desk' },
-    { id: '4', name: 'D Bloğu - 1. Kat', floor: 1, totalDesks: 10, availableDesks: 7, type: 'desk' },
-  ]);
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        setLoading(true);
+        const data = await apiService.getLocations();
+        setLocations(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching locations:', err);
+        setError('Lokasyonlar yüklenirken bir hata oluştu');
+        setLocations([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLocations();
+  }, []);
 
   const columns = [
     {
@@ -32,41 +41,25 @@ const LocationsPage: React.FC = () => {
       ),
     },
     {
-      key: 'floor',
-      label: 'Kat',
+      key: 'address',
+      label: 'Adres',
       sortable: true,
-      render: (value: number) => <span style={{ fontWeight: 600, color: '#312e81' }}>Kat {value}</span>,
+      render: (value: string) => <span style={{ color: '#666', fontSize: '0.9rem' }}>{value}</span>,
     },
     {
-      key: 'type',
-      label: 'Tür',
+      key: 'isActive',
+      label: 'Durum',
       sortable: true,
-      render: (value: string) => (
-        <span style={{ padding: '0.25rem 0.75rem', backgroundColor: value === 'desk' ? '#eef2ff' : '#fef3c7', color: value === 'desk' ? '#312e81' : '#92400e', borderRadius: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>
-          {value === 'desk' ? 'Masa' : 'Oda'}
-        </span>
-      ),
-    },
-    {
-      key: 'totalDesks',
-      label: 'Toplam',
-      sortable: true,
-      render: (value: number) => <span style={{ fontWeight: 600, color: '#6366f1' }}>{value}</span>,
-    },
-    {
-      key: 'availableDesks',
-      label: 'Müsait',
-      sortable: true,
-      render: (value: number) => (
-        <span style={{ padding: '0.25rem 0.75rem', backgroundColor: '#dcfce7', color: '#166534', borderRadius: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>
-          {value}
+      render: (value: boolean) => (
+        <span style={{ padding: '0.25rem 0.75rem', backgroundColor: value ? '#dcfce7' : '#fee2e2', color: value ? '#166534' : '#991b1b', borderRadius: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>
+          {value ? 'Aktif' : 'Pasif'}
         </span>
       ),
     },
     {
       key: 'actions',
       label: 'İşlemler',
-      render: (value: any, row: Location) => (
+      render: (_: any, row: Location) => (
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }} onClick={() => console.log('Edit', row.id)}>
             <Edit2 style={{ width: '16px', height: '16px' }} />
@@ -96,13 +89,28 @@ const LocationsPage: React.FC = () => {
       </div>
 
       <div style={{ background: '#fff', borderRadius: '1.5rem', padding: '2rem', boxShadow: '0 8px 32px rgba(31,38,135,0.10)', overflowX: 'auto' }}>
-        <Table
-          columns={columns as any}
-          data={locations}
-          pagination={true}
-          pageSize={10}
-          striped={true}
-        />
+        {error && (
+          <div style={{ padding: '1rem', backgroundColor: '#fee2e2', color: '#991b1b', borderRadius: '0.5rem', marginBottom: '1rem' }}>
+            {error}
+          </div>
+        )}
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+            Lokasyonlar yükleniyor...
+          </div>
+        ) : locations.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '2rem', color: '#999' }}>
+            Lokasyon bulunamadı
+          </div>
+        ) : (
+          <Table
+            columns={columns as any}
+            data={locations}
+            pagination={true}
+            pageSize={10}
+            striped={true}
+          />
+        )}
       </div>
     </PageContainer>
   );

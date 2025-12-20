@@ -4,6 +4,7 @@ import { tr } from 'date-fns/locale';
 import { Calendar, MapPin, CheckCircle, Users, TrendingUp, Clock, AlertCircle } from 'lucide-react';
 import { PageContainer, PageHeader, StatCard, PrimaryButton, SecondaryButton } from '../../widgets';
 import { useAuth } from '../../context/AuthContext';
+import apiService from '../../utils/services/api';
 import type { DashboardStats, Reservation } from '../../types';
 
 const DashboardPage: React.FC = () => {
@@ -11,6 +12,7 @@ const DashboardPage: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentReservations, setRecentReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -18,46 +20,22 @@ const DashboardPage: React.FC = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        setError(null);
 
-        const mockStats: DashboardStats = {
-          totalDesks: 120,
-          availableDesks: 45,
-          totalRooms: 8,
-          availableRooms: 3,
-          myActiveReservations: 2,
-          todayReservations: 5,
-        };
-
-        const mockReservations: Reservation[] = [
-          {
-            id: '1',
-            userId: user?.id || '1',
-            deskId: 'd1',
-            startTime: new Date(Date.now() + 3600000).toISOString(),
-            endTime: new Date(Date.now() + 7200000).toISOString(),
-            status: 'Confirmed',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            checkIns: [],
-          },
-          {
-            id: '2',
-            userId: user?.id || '1',
-            deskId: 'd2',
-            startTime: new Date(Date.now() + 86400000).toISOString(),
-            endTime: new Date(Date.now() + 90000000).toISOString(),
-            status: 'Pending',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            checkIns: [],
-          },
-        ];
+        // Fetch dashboard stats
+        const statsData = await apiService.getDashboardStats();
+        
+        // Fetch user's reservations
+        const reservations = await apiService.getMyReservations();
 
         if (!isMounted) return;
-        setStats(mockStats);
-        setRecentReservations(mockReservations);
-      } catch {
-        console.error('Error fetching data');
+        setStats(statsData);
+        setRecentReservations(reservations.slice(0, 5)); // Show only 5 recent
+      } catch (err) {
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : 'Veri yükleme hatası');
+          console.error('Error fetching data:', err);
+        }
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -81,6 +59,17 @@ const DashboardPage: React.FC = () => {
         <div style={{ textAlign: 'center', padding: '4rem 0', color: '#6b7280' }}>
           <div style={{ animation: 'spin 1s linear infinite', display: 'inline-block', marginBottom: '1rem' }}>⚙️</div>
           <div>Yükleniyor...</div>
+        </div>
+      </PageContainer>
+    );
+  }
+
+  if (error) {
+    return (
+      <PageContainer>
+        <div style={{ background: '#fee2e2', borderRadius: '1rem', padding: '2rem', color: '#991b1b' }}>
+          <div style={{ fontWeight: 700, marginBottom: '0.5rem' }}>❌ Hata oluştu</div>
+          <div>{error}</div>
         </div>
       </PageContainer>
     );
@@ -149,50 +138,7 @@ const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Haftanın Günlerine Göre Dağılım */}
-      <div style={{ background: '#fff', borderRadius: '1.5rem', padding: '2rem', marginBottom: '2.5rem', boxShadow: '0 8px 32px rgba(31,38,135,0.10)' }}>
-        <h2 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#312e81', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <TrendingUp style={{ width: '24px', height: '24px' }} />
-          Haftanın Rezervasyon Dağılımı
-        </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '1rem' }}>
-          {[
-            { day: 'Pzt', count: 12, max: 25 },
-            { day: 'Sal', count: 18, max: 25 },
-            { day: 'Çar', count: 22, max: 25 },
-            { day: 'Per', count: 15, max: 25 },
-            { day: 'Cum', count: 25, max: 25 },
-            { day: 'Cmt', count: 8, max: 25 },
-            { day: 'Paz', count: 5, max: 25 },
-          ].map((item, idx) => {
-            const percentage = (item.count / item.max) * 100;
-            return (
-              <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#312e81' }}>{item.day}</div>
-                <div style={{ position: 'relative', width: '100%', height: '150px', background: '#f3f4f6', borderRadius: '0.75rem', overflow: 'hidden' }}>
-                  <div
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      width: '100%',
-                      height: `${percentage}%`,
-                      background: `linear-gradient(180deg, #6366f1 0%, #312e81 100%)`,
-                      transition: 'all 0.3s ease',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'linear-gradient(180deg, #818cf8 0%, #4f46e5 100%)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'linear-gradient(180deg, #6366f1 0%, #312e81 100%)';
-                    }}
-                  />
-                </div>
-                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#312e81' }}>{item.count}</div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      {/* Recent Reservations Chart - calculateReservationsByDay kaldırıldı */}
 
       {/* Son Rezervasyonlar */}
       <div style={{ background: '#fff', borderRadius: '1.5rem', padding: '2rem', boxShadow: '0 8px 32px rgba(31,38,135,0.10)' }}>
@@ -234,11 +180,11 @@ const DashboardPage: React.FC = () => {
                 >
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 600, color: '#312e81', marginBottom: '0.5rem', fontSize: '1rem' }}>
-                      Masa #{res.deskId}
+                      {res.deskName || res.roomName || 'Kaynakta'}
                     </div>
                     <div style={{ fontSize: '0.9rem', color: '#6b7280', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       <Clock style={{ width: '16px', height: '16px' }} />
-                      {formatDateTime(res.startTime)} - {format(parseISO(res.endTime), 'HH:mm', { locale: tr })}
+                      {formatDateTime(res.startsAt)} - {format(parseISO(res.endsAt), 'HH:mm', { locale: tr })}
                     </div>
                   </div>
                   <div

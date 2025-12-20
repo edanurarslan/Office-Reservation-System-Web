@@ -1,106 +1,134 @@
-import React, { useState } from 'react';
-import { Pencil, Trash2, Plus } from 'lucide-react';
-
-type Rule = { id: string; text: string; type: 'Kural' | 'Duyuru' };
-const mockRules: Rule[] = [
-  { id: 'r1', text: 'Ofiste maske takmak zorunludur.', type: 'Kural' },
-  { id: 'r2', text: 'Cuma günü saat 17:00’de temizlik yapılacaktır.', type: 'Duyuru' },
-  { id: 'r3', text: 'Rezervasyonlar en az 1 gün önceden yapılmalıdır.', type: 'Kural' },
-];
+import React, { useState, useEffect } from 'react';
+import { PageContainer, PageHeader, Table, PrimaryButton } from '../../widgets';
+import { Plus, Edit2, Trash2, Shield } from 'lucide-react';
+import apiService from '../../utils/services/api';
+import type { Rule } from '../../types';
 
 const RulesPage: React.FC = () => {
-  const [rules, setRules] = useState<Rule[]>(mockRules);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editRule, setEditRule] = useState<Rule | null>(null);
-  const [form, setForm] = useState({ text: '', type: 'Kural' });
+  const [rules, setRules] = useState<Rule[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const openAddModal = () => {
-    setEditRule(null);
-    setForm({ text: '', type: 'Kural' });
-    setModalOpen(true);
-  };
-  const openEditModal = (rule: Rule) => {
-    setEditRule(rule);
-    setForm({ text: rule.text, type: rule.type });
-    setModalOpen(true);
-  };
-  const closeModal = () => {
-    setModalOpen(false);
-    setEditRule(null);
-  };
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editRule) {
-      setRules(rules.map(r => r.id === editRule.id ? { ...r, text: form.text, type: form.type as 'Kural' | 'Duyuru' } : r));
-    } else {
-      setRules([...rules, { id: 'r' + (rules.length + 1), text: form.text, type: form.type as 'Kural' | 'Duyuru' }]);
-    }
-    closeModal();
-  };
-  const handleDelete = (id: string) => {
-    if (window.confirm('Kural/Duyuru silinsin mi?')) {
-      setRules(rules.filter(r => r.id !== id));
-    }
-  };
+  useEffect(() => {
+    const fetchRules = async () => {
+      try {
+        setLoading(true);
+        const data = await apiService.getRules();
+        setRules(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching rules:', err);
+        setError('Kurallar yüklenirken bir hata oluştu');
+        setRules([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  return (
-    <div className="page-center">
-      <div className="page-glass" style={{maxWidth:700}}>
-        <div className="page-title">Kurallar ve Duyurular Yönetimi</div>
-        <div style={{color:'#6366f1',fontWeight:500,marginBottom:'1.2rem'}}>Rezervasyon ve ofis kullanım kurallarını, duyuruları ekleyin ve düzenleyin.</div>
-        <div style={{margin:'1.5rem 0',display:'flex',justifyContent:'flex-end'}}>
-          <button className="page-btn" onClick={openAddModal} style={{display:'flex',alignItems:'center',gap:6}}>
-            <Plus size={18} /> Yeni Kural/Duyuru
+    fetchRules();
+  }, []);
+
+  const columns = [
+    {
+      key: 'name',
+      label: 'Kural Adı',
+      sortable: true,
+      render: (value: string) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Shield style={{ width: '18px', height: '18px', color: '#6366f1' }} />
+          <span style={{ fontWeight: 600, color: '#312e81' }}>{value}</span>
+        </div>
+      ),
+    },
+    {
+      key: 'description',
+      label: 'Açıklama',
+      sortable: true,
+      render: (value: string) => <span style={{ color: '#666', fontSize: '0.9rem' }}>{value || '-'}</span>,
+    },
+    {
+      key: 'ruleType',
+      label: 'Tür',
+      sortable: true,
+      render: (value: string) => (
+        <span style={{ padding: '0.25rem 0.75rem', backgroundColor: '#eef2ff', color: '#312e81', borderRadius: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>
+          {value}
+        </span>
+      ),
+    },
+    {
+      key: 'priority',
+      label: 'Öncelik',
+      sortable: true,
+      render: (value: number) => <span style={{ fontWeight: 600, color: '#6366f1' }}>{value}</span>,
+    },
+    {
+      key: 'isActive',
+      label: 'Durum',
+      sortable: true,
+      render: (value: boolean) => (
+        <span style={{ padding: '0.25rem 0.75rem', backgroundColor: value ? '#dcfce7' : '#fee2e2', color: value ? '#166534' : '#991b1b', borderRadius: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>
+          {value ? 'Aktif' : 'Pasif'}
+        </span>
+      ),
+    },
+    {
+      key: 'actions',
+      label: 'İşlemler',
+      render: (_: any, row: Rule) => (
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }} onClick={() => console.log('Edit', row.id)}>
+            <Edit2 style={{ width: '16px', height: '16px' }} />
+            Düzenle
+          </button>
+          <button style={{ padding: '0.5rem 0.75rem', border: '1px solid #fee2e2', borderRadius: '0.5rem', background: '#fef2f2', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#991b1b', fontSize: '0.85rem', fontWeight: 600 }} onClick={() => setRules(prev => prev.filter(r => r.id !== row.id))}>
+            <Trash2 style={{ width: '16px', height: '16px' }} />
+            Sil
           </button>
         </div>
-        <table style={{width:'100%',borderCollapse:'collapse',marginBottom:'2rem'}}>
-          <thead>
-            <tr style={{background:'#eef2ff',color:'#6366f1'}}>
-              <th style={{padding:'0.7rem'}}>Tip</th>
-              <th style={{padding:'0.7rem'}}>Metin</th>
-              <th style={{padding:'0.7rem',textAlign:'right'}}>Aksiyon</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rules.length === 0 ? (
-              <tr><td colSpan={3} style={{textAlign:'center',color:'#818cf8',padding:'1.2rem'}}>Kural veya duyuru bulunamadı.</td></tr>
-            ) : (
-              rules.map(r => (
-                <tr key={r.id} style={{background:'#fff',color:'#312e81'}}>
-                  <td style={{padding:'0.7rem'}}>{r.type}</td>
-                  <td style={{padding:'0.7rem'}}>{r.text}</td>
-                  <td style={{padding:'0.7rem',textAlign:'right'}}>
-                    <button className="page-btn" style={{width:'auto',padding:'0.3rem 0.8rem',fontSize:'0.95rem',marginRight:'0.5rem'}} onClick={() => openEditModal(r)}><Pencil size={16} /> Düzenle</button>
-                    <button className="page-btn" style={{width:'auto',padding:'0.3rem 0.8rem',fontSize:'0.95rem',background:'#ef4444',backgroundImage:'none'}} onClick={() => handleDelete(r.id)}><Trash2 size={16} /> Sil</button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-        {modalOpen && (
-          <div style={{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',background:'rgba(49,46,129,0.15)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center'}}>
-            <form onSubmit={handleSubmit} style={{background:'#fff',borderRadius:'1.2rem',padding:'2rem 2.5rem',minWidth:320,boxShadow:'0 8px 32px rgba(49,46,129,0.12)',display:'flex',flexDirection:'column',gap:'1.2rem'}}>
-              <div style={{fontWeight:600,fontSize:'1.2rem',color:'#6366f1',marginBottom:'0.5rem'}}>
-                {editRule ? 'Kural/Duyuru Düzenle' : 'Yeni Kural/Duyuru Ekle'}
-              </div>
-              <select name="type" value={form.type} onChange={handleChange} style={{padding:'0.7rem',borderRadius:'0.7rem',border:'1px solid #e0e7ff'}}>
-                <option value="Kural">Kural</option>
-                <option value="Duyuru">Duyuru</option>
-              </select>
-              <input name="text" value={form.text} onChange={handleChange} placeholder="Kural veya duyuru metni" required style={{padding:'0.7rem',borderRadius:'0.7rem',border:'1px solid #e0e7ff'}} />
-              <div style={{display:'flex',gap:'1rem',marginTop:'1rem'}}>
-                <button type="submit" className="page-btn" style={{flex:1}}>{editRule ? 'Kaydet' : 'Ekle'}</button>
-                <button type="button" className="page-btn" style={{flex:1,background:'#e0e7ff',color:'#6366f1'}} onClick={closeModal}>İptal</button>
-              </div>
-            </form>
+      ),
+    },
+  ];
+
+  return (
+    <PageContainer>
+      <PageHeader
+        title="Kurallar"
+        description="Sistem kurallarını yönetin."
+      />
+
+      <div style={{ marginBottom: '2rem' }}>
+        <PrimaryButton onClick={() => console.log('Yeni kural')} size="medium">
+          <Plus style={{ width: '18px', height: '18px', marginRight: '0.5rem' }} />
+          Yeni Kural
+        </PrimaryButton>
+      </div>
+
+      <div style={{ background: '#fff', borderRadius: '1.5rem', padding: '2rem', boxShadow: '0 8px 32px rgba(31,38,135,0.10)', overflowX: 'auto' }}>
+        {error && (
+          <div style={{ padding: '1rem', backgroundColor: '#fee2e2', color: '#991b1b', borderRadius: '0.5rem', marginBottom: '1rem' }}>
+            {error}
           </div>
         )}
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+            Kurallar yükleniyor...
+          </div>
+        ) : rules.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '2rem', color: '#999' }}>
+            Kural bulunamadı
+          </div>
+        ) : (
+          <Table
+            columns={columns as any}
+            data={rules}
+            pagination={true}
+            pageSize={10}
+            striped={true}
+          />
+        )}
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

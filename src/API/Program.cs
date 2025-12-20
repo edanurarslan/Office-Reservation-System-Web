@@ -5,8 +5,10 @@ using OfisYonetimSistemi.Infrastructure.Data;
 using OfisYonetimSistemi.Domain.Entities;
 using OfisYonetimSistemi.Domain.Enums;
 using Microsoft.OpenApi.Models;
-
 using OfisYonetimSistemi.Infrastructure;
+using OfisYonetimSistemi.Application;
+using OfisYonetimSistemi.API.Filters;
+using OfisYonetimSistemi.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add DbContext for PostgreSQL
@@ -14,7 +16,20 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container
-builder.Services.AddControllers();
+builder.Services
+    .AddControllers(options =>
+    {
+        options.Filters.Add<ValidationFilter>();
+    })
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressModelStateInvalidFilter = false;
+    });
+
+// Add application layer services (MediatR, FluentValidation, etc.)
+builder.Services.AddApplication();
+
+// Add infrastructure services
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -70,6 +85,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 // Add middleware pipeline
+app.UseExceptionHandling();
 app.UseRouting();
 app.UseCors("AllowReactApp");
 app.UseAuthentication();

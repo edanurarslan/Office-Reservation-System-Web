@@ -1,0 +1,246 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OfisYonetimSistemi.API.Dtos;
+using OfisYonetimSistemi.Domain.Entities;
+using OfisYonetimSistemi.Domain.Enums;
+using OfisYonetimSistemi.Infrastructure.Data;
+using OfisYonetimSistemi.Infrastructure.Services;
+using System.Security.Claims;
+
+namespace OfisYonetimSistemi.API.Controllers;
+
+/// <summary>
+/// Handles QR token generation, validation, and check-in/check-out operations
+/// </summary>
+[ApiController]
+[Route("api/v1/checkin")]
+[Authorize]
+public class CheckinController : ControllerBase
+{
+    private readonly ApplicationDbContext _context;
+    private readonly IQrTokenService _qrTokenService;
+    private const int TokenExpirationMinutes = 15;
+
+    public CheckinController(ApplicationDbContext context, IQrTokenService qrTokenService)
+    {
+        _context = context;
+        _qrTokenService = qrTokenService;
+    }
+
+    /// <summary>
+    /// Generates a new QR token for a reservation
+    /// POST /api/v1/checkin/qr-tokens
+    /// </summary>
+    /// <param name="request">Reservation ID and purpose</param>
+    /// <returns>QR token (valid for 15 minutes, one-time use)</returns>
+    [HttpPost("qr-tokens")]
+    public async Task<ActionResult<QrTokenResponse>> GenerateQrToken([FromBody] GenerateQrTokenRequest request)
+    {
+        try
+        {
+            // Get current user ID from JWT token
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
+            {
+                return Unauthorized(new ErrorResponse
+                {
+                    Code = "INVALID_USER",
+                    Message = "User identity could not be determined"
+                });
+            }
+
+            // Validate reservation exists and belongs to user
+            var reservation = await _context.Reservations
+                .FirstOrDefaultAsync(r =>
+                    r.Id == request.ReservationId &&
+                    r.UserId == userId &&
+                    !r.IsDeleted &&
+                    r.Status == ReservationStatus.Confirmed);
+
+            if (reservation == null)
+            {
+                return NotFound(new ErrorResponse
+                {
+                    Code = "RESERVATION_NOT_FOUND",
+                    Message = "Reservation not found or not in confirmed status"
+                });
+            }
+
+            // Check if user has already active QR token for this reservation
+            var existingActiveToken = await _context.QrTokens
+                .FirstOrDefaultAsync(qt =>
+                    qt.ReservationId == request.ReservationId &&
+                    qt.Status == QrTokenStatus.Active &&
+                    qt.ExpiresAt > DateTime.UtcNow);
+
+            if (existingActiveToken != null)
+            {
+                return BadRequest(new ErrorResponse
+                {
+                    Code = "ACTIVE_TOKEN_EXISTS",
+                    Message = "An active QR token already exists for this reservation",
+                    Details = new Dictionary<string, object>
+                    {
+                        { "expiresAt", existingActiveToken.ExpiresAt }
+                    }
+                });
+            }
+
+            // Generate raw token
+            var rawToken = _qrTokenService.GenerateToken();
+            var tokenHash = _qrTokenService.HashToken(rawToken);
+
+            // Create QR token entity
+            var qrToken = new QrToken
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                ReservationId = request.ReservationId,
+                TokenHash = tokenHash,
+                Status = QrTokenStatus.Active,
+                ExpiresAt = DateTime.UtcNow.AddMinutes(TokenExpirationMinutes),
+                Purpose = request.Purpose ?? "checkin",
+                DeviceInfo = Request.Headers["User-Agent"].ToString()
+            };
+
+            _context.QrTokens.Add(qrToken);
+            await _context.SaveChangesAsync();
+
+            var expiresAt = DateTime.UtcNow.AddMinutes(TokenExpirationMinutes);
+            return Ok(new QrTokenResponse
+            {
+                Token = rawToken,  // Send raw token only once
+                ExpiresAt = expiresAt,
+                ExpiresIn = TokenExpirationMinutes * 60,  // In seconds
+                ReservationId = request.ReservationId
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new ErrorResponse
+            {
+                Code = "INTERNAL_SERVER_ERROR",
+                Message = "Failed to generate QR token",
+                Details = new Dictionary<string, object> { { "error", ex.Message } }
+            });
+        }
+    }
+
+    /// <summary>
+    /// Validates a QR token and performs check-in
+    /// POST /api/v1/checkin/validate
+    /// </summary>
+    /// <param name="request">QR token and optional location info</param>
+    /// <returns>Check-in record with confirmation</returns>
+    [HttpPost("validate")]
+    public async Task<ActionResult<CheckInResponse>> ValidateQrToken([FromBody] ValidateQrTokenRequest request)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(request.Token))
+            {
+                return BadRequest(new ErrorResponse
+                {
+                    Code = "EMPTY_TOKEN",
+                    Message = "Token cannot be empty"
+                });
+            }
+
+            // Find the QR token entity
+            var qrTokenEntity = await _context.QrTokens
+                .Include(qt => qt.Reservation)
+                .Include(qt => qt.User)
+                .FirstOrDefaultAsync(qt => qt.Status == QrTokenStatus.Active);
+
+            if (qrTokenEntity == null)
+            {
+                return NotFound(new ErrorResponse
+                {
+                    Code = "TOKEN_NOT_FOUND",
+                    Message = "QR token not found"
+                });
+            }
+
+            // Check if token is expired
+            if (qrTokenEntity.ExpiresAt < DateTime.UtcNow)
+            {
+                qrTokenEntity.Status = QrTokenStatus.Expired;
+                await _context.SaveChangesAsync();
+
+                return BadRequest(new ErrorResponse
+                {
+                    Code = "EXPIRED_TOKEN",
+                    Message = "QR token has expired"
+                });
+            }
+
+            // Validate token hash
+            if (!_qrTokenService.ValidateToken(request.Token, qrTokenEntity.TokenHash))
+            {
+                return BadRequest(new ErrorResponse
+                {
+                    Code = "INVALID_TOKEN",
+                    Message = "QR token is invalid"
+                });
+            }
+
+            // Check if token was already used
+            if (qrTokenEntity.Status == QrTokenStatus.Used)
+            {
+                return BadRequest(new ErrorResponse
+                {
+                    Code = "TOKEN_ALREADY_USED",
+                    Message = "QR token has already been used"
+                });
+            }
+
+            // Mark token as used
+            qrTokenEntity.Status = QrTokenStatus.Used;
+            qrTokenEntity.UsedAt = DateTime.UtcNow;
+
+            // Create check-in record
+            var checkIn = new CheckIn
+            {
+                Id = Guid.NewGuid(),
+                ReservationId = qrTokenEntity.ReservationId!.Value,
+                UserId = qrTokenEntity.UserId,
+                Type = CheckInType.CheckIn,
+                Timestamp = DateTime.UtcNow,
+                DeviceInfo = request.DeviceInfo ?? Request.Headers["User-Agent"].ToString(),
+                LocationInfo = request.LocationId?.ToString(),
+                QrTokenUsed = qrTokenEntity.Id.ToString()
+            };
+
+            // Update reservation status
+            if (qrTokenEntity.Reservation != null)
+            {
+                qrTokenEntity.Reservation.Status = ReservationStatus.CheckedIn;
+            }
+
+            _context.CheckIns.Add(checkIn);
+            _context.QrTokens.Update(qrTokenEntity);
+            await _context.SaveChangesAsync();
+
+            return Ok(new CheckInResponse
+            {
+                CheckInId = checkIn.Id,
+                Status = "checked_in",
+                ReservationId = qrTokenEntity.ReservationId!.Value,
+                ResourceId = qrTokenEntity.Reservation?.ResourceId ?? Guid.Empty,
+                ResourceType = qrTokenEntity.Reservation?.ResourceType.ToString() ?? "Unknown",
+                CheckInTime = checkIn.Timestamp,
+                Message = $"Successfully checked in at {checkIn.Timestamp:yyyy-MM-dd HH:mm:ss}"
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new ErrorResponse
+            {
+                Code = "INTERNAL_SERVER_ERROR",
+                Message = "Failed to validate QR token",
+                Details = new Dictionary<string, object> { { "error", ex.Message } }
+            });
+        }
+    }
+}

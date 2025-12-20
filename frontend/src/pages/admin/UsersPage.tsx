@@ -12,16 +12,9 @@ interface User {
 }
 
 const UsersPage: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([
-    { id: '1', name: 'Ahmet Yıldız', email: 'ahmet.yildiz@example.com', role: 'Çalışan', status: 'active', joinDate: '2024-01-15' },
-    { id: '2', name: 'Elif Kaya', email: 'elif.kaya@example.com', role: 'Yönetmen', status: 'active', joinDate: '2024-01-20' },
-    { id: '3', name: 'Mehmet Demir', email: 'mehmet.demir@example.com', role: 'Çalışan', status: 'active', joinDate: '2024-02-01' },
-    { id: '4', name: 'Ayşe Çelik', email: 'ayse.celik@example.com', role: 'Çalışan', status: 'pending', joinDate: '2024-02-10' },
-    { id: '5', name: 'Can Güzel', email: 'can.guzel@example.com', role: 'Çalışan', status: 'inactive', joinDate: '2024-01-25' },
-    { id: '6', name: 'Zeynep Aydın', email: 'zeynep.aydin@example.com', role: 'Yönetmen', status: 'active', joinDate: '2024-01-18' },
-  ]);
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // API çağrısı yapılacak: GET /api/admin/users

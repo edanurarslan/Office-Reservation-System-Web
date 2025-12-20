@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using OfisYonetimSistemi.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using OfisYonetimSistemi.Infrastructure.Services;
 
 namespace OfisYonetimSistemi.API.Controllers;
 
@@ -10,6 +11,12 @@ namespace OfisYonetimSistemi.API.Controllers;
 [Route("api/v1/reservations")]
 public class ReservationsController : ControllerBase
 {
+    private readonly ICheckOutService _checkOutService;
+
+    public ReservationsController(ICheckOutService checkOutService)
+    {
+        _checkOutService = checkOutService;
+    }
     // POST /reservations
     [HttpPost]
     [Authorize]
@@ -59,6 +66,42 @@ public class ReservationsController : ControllerBase
         return Ok(reservations);
     }
 
+    // GET /reservations/my - Get current user's reservations
+    [HttpGet("my")]
+    [Authorize]
+    public async Task<IActionResult> GetMyReservations([FromServices] OfisYonetimSistemi.Infrastructure.Data.ApplicationDbContext db)
+    {
+        var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized(new { error = "Invalid user token" });
+        }
+        
+        var reservations = await db.Reservations
+            .Where(r => r.UserId == userId)
+            .Include(r => r.Desk)
+                .ThenInclude(d => d != null ? d.Zone : null)
+            .Include(r => r.Room)
+            .Select(r => new 
+            { 
+                r.Id, 
+                r.UserId,
+                r.ResourceType, 
+                r.ResourceId, 
+                r.StartsAt, 
+                r.EndsAt, 
+                r.Status,
+                DeskName = r.Desk != null ? r.Desk.Name : null,
+                RoomName = r.Room != null ? r.Room.Name : null,
+                r.CreatedAt,
+                r.UpdatedAt
+            })
+            .OrderByDescending(r => r.StartsAt)
+            .ToListAsync();
+        
+        return Ok(reservations);
+    }
+
     // GET /reservations/{id}
     [HttpGet("{id}")]
     [Authorize]
@@ -96,6 +139,50 @@ public class ReservationsController : ControllerBase
         await db.SaveChangesAsync();
         return NoContent();
     }
+
+    // POST /reservations/{id}/checkout
+    /// <summary>
+    /// Check-out from a reservation (mark as completed)
+    /// </summary>
+    /// <param name="id">Reservation ID</param>
+    /// <param name="request">Check-out request with optional device info</param>
+    /// <returns>Check-out confirmation with duration</returns>
+    [HttpPost("{id}/checkout")]
+    [Authorize]
+    public async Task<IActionResult> CheckOut([FromRoute] Guid id, [FromBody] CheckOutRequest? request = null)
+    {
+        try
+        {
+            var result = await _checkOutService.CheckOutAsync(id, request?.DeviceInfo);
+            return Ok(result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = new { code = "CHECKOUT_ERROR", message = ex.Message } });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = new { code = "INTERNAL_ERROR", message = ex.Message } });
+        }
+    }
+
+    // GET /reservations/{id}/duration
+    /// <summary>
+    /// Get check-in duration for a completed reservation
+    /// </summary>
+    /// <param name="id">Reservation ID</param>
+    /// <returns>Duration in minutes</returns>
+    [HttpGet("{id}/duration")]
+    [Authorize]
+    public async Task<IActionResult> GetCheckInDuration([FromRoute] Guid id)
+    {
+        var duration = await _checkOutService.GetCheckInDurationAsync(id);
+        if (!duration.HasValue)
+        {
+            return NotFound(new { error = new { code = "DURATION_NOT_FOUND", message = "Duration not available for this reservation" } });
+        }
+        return Ok(new { reservationId = id, durationMinutes = duration.Value });
+    }
 }
 
 public class CreateReservationRequest
@@ -119,4 +206,9 @@ public class UpdateReservationRequest
     public string? EndsAt { get; set; }
     public string? Status { get; set; }
     public object? Meta { get; set; }
+}
+
+public class CheckOutRequest
+{
+    public string? DeviceInfo { get; set; }
 }

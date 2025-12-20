@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 
-const mockLogs = [
-  { id: 'log1', user: 'Ofis Kullanıcı', action: 'Rezervasyon oluşturdu', date: '2025-10-29 15:10' },
-  { id: 'log2', user: 'Yönetici', action: 'Kural güncelledi', date: '2025-10-30 09:45' },
-];
-
 const ManagerLogsPage: React.FC = () => {
-  const [logs] = useState(mockLogs);
+  const [logs] = useState([]);
 
   return (
     <div className="page-center">
@@ -24,15 +19,7 @@ const ManagerLogsPage: React.FC = () => {
           <tbody>
             {logs.length === 0 ? (
               <tr><td colSpan={3} style={{textAlign:'center',color:'#818cf8',padding:'1.2rem'}}>Log kaydı yok.</td></tr>
-            ) : (
-              logs.map(l => (
-                <tr key={l.id} style={{background:'#fff',color:'#312e81'}}>
-                  <td style={{padding:'0.7rem'}}>{l.user}</td>
-                  <td style={{padding:'0.7rem'}}>{l.action}</td>
-                  <td style={{padding:'0.7rem'}}>{l.date}</td>
-                </tr>
-              ))
-            )}
+            ) : null}
           </tbody>
         </table>
       </div>

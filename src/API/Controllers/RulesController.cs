@@ -14,7 +14,7 @@ public class RulesController : ControllerBase
     [Authorize]
     public async Task<IActionResult> GetRules([FromServices] OfisYonetimSistemi.Infrastructure.Data.ApplicationDbContext db)
     {
-        var rules = await db.Rules.Where(r => r.IsActive).Select(r => new { r.Id, r.Type, r.Configuration, r.Priority, r.ValidFrom, r.ValidUntil }).ToListAsync();
+        var rules = await db.Rules.Where(r => r.IsActive).Select(r => new { r.Id, r.Name, r.Description, r.Type, r.Configuration, r.Priority, r.ValidFrom, r.ValidUntil, r.IsActive }).ToListAsync();
         return Ok(rules);
     }
 

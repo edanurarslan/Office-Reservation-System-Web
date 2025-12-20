@@ -114,33 +114,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(response.user);
     } catch (error: any) {
       console.error('Login error:', error);
-
-      const isDemoAdmin = credentials.email === DEMO_AUTH_EMAIL && credentials.password === DEMO_AUTH_PASSWORD;
-      const isDemoUser = credentials.email === DEMO_USER_EMAIL && credentials.password === DEMO_USER_PASSWORD;
-      const isDemoManager = credentials.email === DEMO_MANAGER_EMAIL && credentials.password === DEMO_MANAGER_PASSWORD;
-
-      if (isDemoAdmin) {
-        localStorage.setItem('token', 'demo-token');
-        localStorage.setItem('user', JSON.stringify(demoUser));
-        localStorage.setItem('authMode', 'demo');
-        setUser(demoUser);
-        return;
-      }
-      if (isDemoUser) {
-        localStorage.setItem('token', 'demo-token');
-        localStorage.setItem('user', JSON.stringify(demoNormalUser));
-        localStorage.setItem('authMode', 'demo');
-        setUser(demoNormalUser);
-        return;
-      }
-      if (isDemoManager) {
-        localStorage.setItem('token', 'demo-token');
-        localStorage.setItem('user', JSON.stringify(demoManagerUser));
-        localStorage.setItem('authMode', 'demo');
-        setUser(demoManagerUser);
-        return;
-      }
-
+      // Don't fall back to demo mode - throw the error
       throw error;
     } finally {
       setIsLoading(false);

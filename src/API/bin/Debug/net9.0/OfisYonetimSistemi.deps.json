@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v9.0": {
       "OfisYonetimSistemi/1.0.0": {
         "dependencies": {
+          "FluentValidation": "12.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.10",
           "Microsoft.AspNetCore.OpenApi": "9.0.9",
           "Microsoft.EntityFrameworkCore": "9.0.10",

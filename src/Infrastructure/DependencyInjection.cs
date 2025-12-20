@@ -4,8 +4,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
+using OfisYonetimSistemi.Application.Services;
 using OfisYonetimSistemi.Infrastructure.Authentication;
 using OfisYonetimSistemi.Infrastructure.Data;
+using OfisYonetimSistemi.Infrastructure.Services;
 using System.Text;
 
 namespace OfisYonetimSistemi.Infrastructure;
@@ -47,7 +49,7 @@ public static class DependencyInjection
                 {
                     if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
                     {
-                        context.Response.Headers.Add("Token-Expired", "true");
+                        context.Response.Headers["Token-Expired"] = "true";
                     }
                     return Task.CompletedTask;
                 }
@@ -55,6 +57,18 @@ public static class DependencyInjection
         });
 
         services.AddAuthorization(AuthorizationPolicies.AddPolicies);
+
+        // Phase 1.2 Services
+        services.AddScoped<ICheckOutService, CheckOutService>();
+        services.AddScoped<IOccupancyAnalyticsService, OccupancyAnalyticsService>();
+        services.AddHostedService<AutoCheckOutHostedService>();
+
+        // Phase 3 Services
+        services.AddScoped<IHeatMapService, HeatMapService>();
+        services.AddScoped<IFloorPlanService, FloorPlanService>();
+        services.AddScoped<IRulesEngineService, RulesEngineService>();
+        services.AddScoped<IFileStorageService, LocalFileStorageService>();
+        services.AddScoped<INoShowCleanupService, NoShowCleanupService>();
 
         // Database
         services.AddDbContext<ApplicationDbContext>(options =>

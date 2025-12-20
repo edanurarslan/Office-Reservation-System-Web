@@ -20,7 +20,11 @@ public class ApplicationDbContext : DbContext
     public DbSet<CheckIn> CheckIns { get; set; }
     public DbSet<QrToken> QrTokens { get; set; }
     public DbSet<Rule> Rules { get; set; }
+    public DbSet<RuleAuditLog> RuleAuditLogs { get; set; }
     public DbSet<AuditLog> AuditLogs { get; set; }
+    public DbSet<FloorPlan> FloorPlans { get; set; }
+    public DbSet<FloorPlanAnnotation> FloorPlanAnnotations { get; set; }
+    public DbSet<NoShowHistory> NoShowHistories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
