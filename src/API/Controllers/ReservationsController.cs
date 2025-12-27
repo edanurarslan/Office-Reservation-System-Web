@@ -12,10 +12,12 @@ namespace OfisYonetimSistemi.API.Controllers;
 public class ReservationsController : ControllerBase
 {
     private readonly ICheckOutService _checkOutService;
+    private readonly IAuditLogService _auditLogService;
 
-    public ReservationsController(ICheckOutService checkOutService)
+    public ReservationsController(ICheckOutService checkOutService, IAuditLogService auditLogService)
     {
         _checkOutService = checkOutService;
+        _auditLogService = auditLogService;
     }
     // POST /reservations
     [HttpPost]
@@ -49,6 +51,11 @@ public class ReservationsController : ControllerBase
         };
         db.Reservations.Add(reservation);
         await db.SaveChangesAsync();
+
+        await _auditLogService.LogAsync("CREATE", "Reservation", reservation.Id, null, 
+            new { reservation.ResourceType, reservation.ResourceId, reservation.StartsAt, reservation.EndsAt }, 
+            $"Yeni rezervasyon oluşturuldu: {reservation.ResourceType}");
+
         return Ok(new { reservation.Id, reservation.ResourceType, reservation.ResourceId, reservation.StartsAt, reservation.EndsAt, reservation.Status });
     }
 
@@ -119,12 +126,20 @@ public class ReservationsController : ControllerBase
     {
         var r = await db.Reservations.FindAsync(id);
         if (r == null) return NotFound();
+        
+        var oldValues = new { r.ResourceType, r.ResourceId, r.StartsAt, r.EndsAt, r.Status };
+        
         if (!string.IsNullOrEmpty(request.ResourceType)) r.ResourceType = request.ResourceType == "desk" ? OfisYonetimSistemi.Domain.Enums.ResourceType.Desk : OfisYonetimSistemi.Domain.Enums.ResourceType.Room;
         if (!string.IsNullOrEmpty(request.ResourceId)) r.ResourceId = Guid.Parse(request.ResourceId);
         if (!string.IsNullOrEmpty(request.StartsAt)) r.StartsAt = DateTime.Parse(request.StartsAt).ToUniversalTime();
         if (!string.IsNullOrEmpty(request.EndsAt)) r.EndsAt = DateTime.Parse(request.EndsAt).ToUniversalTime();
         if (!string.IsNullOrEmpty(request.Status) && Enum.TryParse<OfisYonetimSistemi.Domain.Enums.ReservationStatus>(request.Status, out var stat)) r.Status = stat;
         await db.SaveChangesAsync();
+
+        await _auditLogService.LogAsync("UPDATE", "Reservation", r.Id, oldValues, 
+            new { r.ResourceType, r.ResourceId, r.StartsAt, r.EndsAt, r.Status }, 
+            $"Rezervasyon güncellendi");
+
         return Ok(new { r.Id, r.ResourceType, r.ResourceId, r.StartsAt, r.EndsAt, r.Status });
     }
 
@@ -135,6 +150,11 @@ public class ReservationsController : ControllerBase
     {
         var r = await db.Reservations.FindAsync(id);
         if (r == null) return NotFound();
+        
+        await _auditLogService.LogAsync("DELETE", "Reservation", r.Id, 
+            new { r.ResourceType, r.ResourceId, r.StartsAt, r.EndsAt }, null, 
+            $"Rezervasyon silindi");
+
         db.Reservations.Remove(r);
         await db.SaveChangesAsync();
         return NoContent();

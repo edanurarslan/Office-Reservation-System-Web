@@ -5,6 +5,7 @@ export { default as FloorplanPage } from './FloorplanPage';
 export { default as LocationsPage } from './LocationsPage';
 export { default as LogsPage } from './LogsPage';
 export { default as NotificationsPage } from './NotificationsPage';
+export { default as OverviewPage } from './OverviewPage';
 export { default as ReportsPage } from './ReportsPage';
 export { default as RulesPage } from './RulesPage';
 export { default as UsersPage } from './UsersPage';

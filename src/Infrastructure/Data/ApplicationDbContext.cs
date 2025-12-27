@@ -25,6 +25,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<FloorPlan> FloorPlans { get; set; }
     public DbSet<FloorPlanAnnotation> FloorPlanAnnotations { get; set; }
     public DbSet<NoShowHistory> NoShowHistories { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
+    public DbSet<ApprovalRequest> ApprovalRequests { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

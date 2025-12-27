@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using OfisYonetimSistemi.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using OfisYonetimSistemi.Domain.Enums;
 using OfisYonetimSistemi.Infrastructure.Authentication;
+using OfisYonetimSistemi.Infrastructure.Services;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Security.Claims;
 
 namespace OfisYonetimSistemi.API.Controllers;
 
@@ -12,10 +15,12 @@ namespace OfisYonetimSistemi.API.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IJwtTokenService _jwtTokenService;
+    private readonly IAuditLogService _auditLogService;
 
-    public AuthController(IJwtTokenService jwtTokenService)
+    public AuthController(IJwtTokenService jwtTokenService, IAuditLogService auditLogService)
     {
         _jwtTokenService = jwtTokenService;
+        _auditLogService = auditLogService;
     }
 
 
@@ -27,11 +32,22 @@ public class AuthController : ControllerBase
 
         var user = await db.Users.FirstOrDefaultAsync(u => u.Email == request.Email && u.IsActive);
         if (user == null)
+        {
+            // Log failed login attempt (user not found)
+            await _auditLogService.LogAsync("LOGIN_FAILED", "User", null, null, null, $"Kullanıcı bulunamadı: {request.Email}");
             return Unauthorized(new { Error = "Invalid credentials" });
+        }
 
         // Basit hash kontrolü (gerçek sistemde hash karşılaştırması yapılmalı)
         if (user.PasswordHash != request.Password)
+        {
+            // Log failed login attempt (wrong password)
+            await _auditLogService.LogLoginAsync(user.Id, false, "Yanlış şifre");
             return Unauthorized(new { Error = "Invalid credentials" });
+        }
+
+        // Log successful login
+        await _auditLogService.LogLoginAsync(user.Id, true);
 
         var token = _jwtTokenService.GenerateAccessToken(user);
         var refreshToken = _jwtTokenService.GenerateRefreshToken();
@@ -53,6 +69,18 @@ public class AuthController : ControllerBase
                 user.JobTitle
             }
         });
+    }
+
+    [HttpPost("logout")]
+    [Authorize]
+    public async Task<IActionResult> Logout()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var userId))
+        {
+            await _auditLogService.LogLogoutAsync(userId);
+        }
+        return Ok(new { message = "Çıkış yapıldı" });
     }
 
     [HttpPost("refresh-token")]

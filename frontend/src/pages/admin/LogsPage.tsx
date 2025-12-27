@@ -1,154 +1,127 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { PageContainer, PageHeader, Table, TextInput } from '../../widgets';
-import { Search, User, FileText, Calendar, Filter } from 'lucide-react';
-import { format, parseISO } from 'date-fns';
+import { User, FileText, Calendar, Filter, RefreshCw, Trash2, BarChart3 } from 'lucide-react';
+import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
+import api from '../../utils/services/api';
 
 interface Log {
   id: string;
   timestamp: string;
   user: string;
+  userName: string;
   action: string;
   resource: string;
   resourceType: string;
+  entityType: string;
+  entityId: string | null;
   status: 'success' | 'error' | 'warning';
   details: string;
+  ipAddress: string | null;
+  userAgent: string | null;
+}
+
+interface LogStats {
+  totalLogs: number;
+  todayLogs: number;
+  weekLogs: number;
+  errorLogs: number;
+  actionStats: { action: string; count: number }[];
 }
 
 const LogsPage: React.FC = () => {
-  const [logs] = useState<Log[]>([
-    {
-      id: '1',
-      timestamp: '2024-01-15T14:30:00Z',
-      user: 'ahmet.yilmaz@company.com',
-      action: 'create',
-      resource: 'A101',
-      resourceType: 'reservation',
-      status: 'success',
-      details: 'A101 masası için rezervasyon oluşturuldu',
-    },
-    {
-      id: '2',
-      timestamp: '2024-01-15T14:25:00Z',
-      user: 'fatma.kaya@company.com',
-      action: 'update',
-      resource: 'User#5',
-      resourceType: 'user',
-      status: 'success',
-      details: 'Kullanıcı profili güncellendi',
-    },
-    {
-      id: '3',
-      timestamp: '2024-01-15T14:20:00Z',
-      user: 'admin@company.com',
-      action: 'delete',
-      resource: 'Location#3',
-      resourceType: 'location',
-      status: 'success',
-      details: 'Ofis konumu silindi',
-    },
-    {
-      id: '4',
-      timestamp: '2024-01-15T14:15:00Z',
-      user: 'can.demirel@company.com',
-      action: 'approve',
-      resource: 'Reservation#42',
-      resourceType: 'reservation',
-      status: 'success',
-      details: 'Rezervasyon onaylandı',
-    },
-    {
-      id: '5',
-      timestamp: '2024-01-15T14:10:00Z',
-      user: 'zeynep.ozdemir@company.com',
-      action: 'login',
-      resource: 'System',
-      resourceType: 'auth',
-      status: 'success',
-      details: 'Başarılı giriş',
-    },
-    {
-      id: '6',
-      timestamp: '2024-01-15T14:05:00Z',
-      user: 'murat.sahin@company.com',
-      action: 'export',
-      resource: 'Reports',
-      resourceType: 'report',
-      status: 'success',
-      details: 'Raporlar PDF olarak dışa aktarıldı',
-    },
-    {
-      id: '7',
-      timestamp: '2024-01-15T13:55:00Z',
-      user: 'elif.aydin@company.com',
-      action: 'failed_login',
-      resource: 'System',
-      resourceType: 'auth',
-      status: 'error',
-      details: 'Hatalı şifre ile giriş denemesi',
-    },
-    {
-      id: '8',
-      timestamp: '2024-01-15T13:45:00Z',
-      user: 'admin@company.com',
-      action: 'bulk_update',
-      resource: 'Users (15)',
-      resourceType: 'user',
-      status: 'success',
-      details: '15 kullanıcının rolü toplu olarak güncellendi',
-    },
-    {
-      id: '9',
-      timestamp: '2024-01-15T13:30:00Z',
-      user: 'ahmet.yilmaz@company.com',
-      action: 'cancel',
-      resource: 'Reservation#38',
-      resourceType: 'reservation',
-      status: 'warning',
-      details: 'Rezervasyon iptal edildi',
-    },
-    {
-      id: '10',
-      timestamp: '2024-01-15T13:20:00Z',
-      user: 'system@company.com',
-      action: 'backup',
-      resource: 'Database',
-      resourceType: 'system',
-      status: 'success',
-      details: 'Otomatik veritabanı yedeklemesi başarılı',
-    },
-  ]);
-
+  const [logs, setLogs] = useState<Log[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [actionFilter, setActionFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [entityTypeFilter, setEntityTypeFilter] = useState<string>('all');
+  const [actions, setActions] = useState<string[]>([]);
+  const [entityTypes, setEntityTypes] = useState<string[]>([]);
+  const [stats, setStats] = useState<LogStats | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
-  const filteredLogs = useMemo(() => {
-    return logs.filter(log => {
-      const matchesSearch = log.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           log.resource.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           log.details.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesAction = actionFilter === 'all' || log.action === actionFilter;
-      const matchesStatus = statusFilter === 'all' || log.status === statusFilter;
-      return matchesSearch && matchesAction && matchesStatus;
-    });
-  }, [searchTerm, actionFilter, statusFilter]);
+  const fetchLogs = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await api.getLogs({
+        search: searchTerm || undefined,
+        action: actionFilter !== 'all' ? actionFilter : undefined,
+        status: statusFilter !== 'all' ? statusFilter : undefined,
+        entityType: entityTypeFilter !== 'all' ? entityTypeFilter : undefined,
+        page,
+        pageSize: 50
+      });
+      setLogs(response.data);
+      setTotalPages(response.totalPages);
+      setTotalCount(response.totalCount);
+    } catch (error) {
+      console.error('Loglar yüklenirken hata:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm, actionFilter, statusFilter, entityTypeFilter, page]);
+
+  const fetchFilters = useCallback(async () => {
+    try {
+      const [actionsData, entityTypesData, statsData] = await Promise.all([
+        api.getLogActions(),
+        api.getLogEntityTypes(),
+        api.getLogStats()
+      ]);
+      setActions(actionsData);
+      setEntityTypes(entityTypesData);
+      setStats(statsData);
+    } catch (error) {
+      console.error('Filtreler yüklenirken hata:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchFilters();
+  }, [fetchFilters]);
+
+  useEffect(() => {
+    fetchLogs();
+  }, [fetchLogs]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPage(1);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  const handleCleanup = async () => {
+    if (!confirm('90 günden eski tüm logları silmek istediğinize emin misiniz?')) return;
+    try {
+      await api.cleanupOldLogs(90);
+      fetchLogs();
+      fetchFilters();
+    } catch (error) {
+      console.error('Log temizleme hatası:', error);
+    }
+  };
 
   const getActionLabel = (action: string) => {
     const labels: Record<string, string> = {
-      create: 'Oluştur',
-      update: 'Güncelle',
-      delete: 'Sil',
-      approve: 'Onayla',
-      reject: 'Reddet',
-      login: 'Giriş',
-      logout: 'Çıkış',
-      export: 'Dışa Aktar',
-      import: 'İçe Aktar',
-      failed_login: 'Başarısız Giriş',
-      bulk_update: 'Toplu Güncelleme',
-      cancel: 'İptal',
-      backup: 'Yedekleme',
+      CREATE: 'Oluştur',
+      UPDATE: 'Güncelle',
+      DELETE: 'Sil',
+      APPROVE: 'Onayla',
+      REJECT: 'Reddet',
+      LOGIN: 'Giriş',
+      LOGOUT: 'Çıkış',
+      LOGIN_FAILED: 'Başarısız Giriş',
+      EXPORT: 'Dışa Aktar',
+      IMPORT: 'İçe Aktar',
+      BULK_UPDATE: 'Toplu Güncelleme',
+      CANCEL: 'İptal',
+      CLEANUP: 'Temizlik',
+      CHECKIN: 'Check-in',
+      CHECKOUT: 'Check-out',
     };
     return labels[action] || action;
   };
@@ -161,8 +134,13 @@ const LogsPage: React.FC = () => {
       auth: { bg: '#fef3c7', color: '#92400e' },
       report: { bg: '#dbeafe', color: '#0c4a6e' },
       system: { bg: '#f5f3ff', color: '#4f46e5' },
+      desk: { bg: '#fce7f3', color: '#9d174d' },
+      room: { bg: '#ccfbf1', color: '#0f766e' },
+      rule: { bg: '#fef9c3', color: '#854d0e' },
+      notification: { bg: '#e0e7ff', color: '#3730a3' },
+      auditlog: { bg: '#f1f5f9', color: '#475569' },
     };
-    return labels[type] || { bg: '#f3f4f6', color: '#6b7280' };
+    return labels[type?.toLowerCase()] || { bg: '#f3f4f6', color: '#6b7280' };
   };
 
   const statusConfig: Record<string, { bg: string; color: string; label: string }> = {
@@ -170,8 +148,6 @@ const LogsPage: React.FC = () => {
     error: { bg: '#fee2e2', color: '#991b1b', label: 'Hata' },
     warning: { bg: '#fef3c7', color: '#92400e', label: 'Uyarı' },
   };
-
-  const actions = Array.from(new Set(logs.map(l => l.action))).sort();
 
   const tableColumns = [
     {
@@ -181,7 +157,7 @@ const LogsPage: React.FC = () => {
       render: (value: string) => (
         <div style={{ fontSize: '0.9rem', color: '#6b7280', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Calendar style={{ width: '16px', height: '16px', color: '#9ca3af' }} />
-          {format(parseISO(value), 'dd MMM HH:mm', { locale: tr })}
+          {format(new Date(value), 'dd MMM HH:mm', { locale: tr })}
         </div>
       ),
     },
@@ -189,17 +165,20 @@ const LogsPage: React.FC = () => {
       key: 'user',
       header: 'Kullanıcı',
       width: '180px',
-      render: (value: string) => (
+      render: (value: string, row: Log) => (
         <div style={{ fontSize: '0.9rem', color: '#6b7280', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
           <User style={{ width: '16px', height: '16px', color: '#9ca3af' }} />
-          {value}
+          <div>
+            <div>{row.userName || 'Sistem'}</div>
+            <div style={{ fontSize: '0.75rem', color: '#9ca3af' }}>{value}</div>
+          </div>
         </div>
       ),
     },
     {
       key: 'action',
       header: 'İşlem',
-      width: '120px',
+      width: '130px',
       render: (value: string) => (
         <div style={{ 
           display: 'inline-block', 
@@ -230,7 +209,7 @@ const LogsPage: React.FC = () => {
             fontSize: '0.85rem',
             fontWeight: 600
           }}>
-            {value}
+            {value || row.entityType}
           </div>
         );
       },
@@ -241,7 +220,7 @@ const LogsPage: React.FC = () => {
       render: (value: string) => (
         <div style={{ color: '#6b7280', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <FileText style={{ width: '16px', height: '16px', color: '#9ca3af', flexShrink: 0 }} />
-          {value}
+          {value || '-'}
         </div>
       ),
     },
@@ -252,14 +231,14 @@ const LogsPage: React.FC = () => {
       render: (value: 'success' | 'error' | 'warning') => (
         <div style={{ 
           display: 'inline-block', 
-          background: statusConfig[value].bg, 
-          color: statusConfig[value].color, 
+          background: statusConfig[value]?.bg || statusConfig.success.bg, 
+          color: statusConfig[value]?.color || statusConfig.success.color, 
           padding: '0.25rem 0.75rem', 
           borderRadius: '0.5rem',
           fontSize: '0.85rem',
           fontWeight: 600
         }}>
-          {statusConfig[value].label}
+          {statusConfig[value]?.label || 'Başarılı'}
         </div>
       ),
     },
@@ -270,7 +249,85 @@ const LogsPage: React.FC = () => {
       <PageHeader
         title="Sistem Günlükleri"
         description="Sistem aktivitesini ve işlemlerini izleyin."
+        action={
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button
+              onClick={fetchLogs}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.75rem 1rem',
+                background: '#fff',
+                border: '1px solid #e5e7eb',
+                borderRadius: '0.75rem',
+                color: '#312e81',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              <RefreshCw style={{ width: '18px', height: '18px' }} />
+              Yenile
+            </button>
+            <button
+              onClick={handleCleanup}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.75rem 1rem',
+                background: '#fee2e2',
+                border: 'none',
+                borderRadius: '0.75rem',
+                color: '#991b1b',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              <Trash2 style={{ width: '18px', height: '18px' }} />
+              Eski Logları Temizle
+            </button>
+          </div>
+        }
       />
+
+      {stats && (
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+          gap: '1rem', 
+          marginBottom: '2rem' 
+        }}>
+          <div style={{ background: '#fff', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 4px 16px rgba(31,38,135,0.08)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <BarChart3 style={{ width: '24px', height: '24px', color: '#6366f1' }} />
+              <span style={{ color: '#6b7280', fontSize: '0.9rem' }}>Toplam Log</span>
+            </div>
+            <div style={{ fontSize: '2rem', fontWeight: 700, color: '#312e81' }}>{stats.totalLogs.toLocaleString()}</div>
+          </div>
+          <div style={{ background: '#fff', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 4px 16px rgba(31,38,135,0.08)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <Calendar style={{ width: '24px', height: '24px', color: '#10b981' }} />
+              <span style={{ color: '#6b7280', fontSize: '0.9rem' }}>Bugün</span>
+            </div>
+            <div style={{ fontSize: '2rem', fontWeight: 700, color: '#166534' }}>{stats.todayLogs.toLocaleString()}</div>
+          </div>
+          <div style={{ background: '#fff', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 4px 16px rgba(31,38,135,0.08)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <Calendar style={{ width: '24px', height: '24px', color: '#3b82f6' }} />
+              <span style={{ color: '#6b7280', fontSize: '0.9rem' }}>Bu Hafta</span>
+            </div>
+            <div style={{ fontSize: '2rem', fontWeight: 700, color: '#0c4a6e' }}>{stats.weekLogs.toLocaleString()}</div>
+          </div>
+          <div style={{ background: '#fff', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 4px 16px rgba(31,38,135,0.08)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <FileText style={{ width: '24px', height: '24px', color: '#ef4444' }} />
+              <span style={{ color: '#6b7280', fontSize: '0.9rem' }}>Hatalar</span>
+            </div>
+            <div style={{ fontSize: '2rem', fontWeight: 700, color: '#991b1b' }}>{stats.errorLogs.toLocaleString()}</div>
+          </div>
+        </div>
+      )}
 
       <div style={{ background: '#fff', borderRadius: '1.5rem', padding: '2rem', boxShadow: '0 8px 32px rgba(31,38,135,0.10)', marginBottom: '2rem' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
@@ -286,7 +343,7 @@ const LogsPage: React.FC = () => {
             </label>
             <select
               value={actionFilter}
-              onChange={(e) => setActionFilter(e.target.value)}
+              onChange={(e) => { setActionFilter(e.target.value); setPage(1); }}
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -306,11 +363,35 @@ const LogsPage: React.FC = () => {
           </div>
           <div>
             <label style={{ display: 'block', fontWeight: 600, color: '#312e81', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+              Kaynak Tipi
+            </label>
+            <select
+              value={entityTypeFilter}
+              onChange={(e) => { setEntityTypeFilter(e.target.value); setPage(1); }}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #e5e7eb',
+                borderRadius: '0.75rem',
+                fontSize: '0.95rem',
+                color: '#312e81',
+                fontWeight: 500,
+                cursor: 'pointer',
+              }}
+            >
+              <option value="all">Tümü</option>
+              {entityTypes.map(type => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label style={{ display: 'block', fontWeight: 600, color: '#312e81', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
               Durum
             </label>
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -325,21 +406,76 @@ const LogsPage: React.FC = () => {
               <option value="all">Tümü</option>
               <option value="success">Başarılı</option>
               <option value="error">Hata</option>
-              <option value="warning">Uyarı</option>
             </select>
           </div>
         </div>
 
         <div style={{ fontSize: '0.9rem', color: '#6b7280', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Filter style={{ width: '16px', height: '16px' }} />
-          {filteredLogs.length} kayıt bulundu
+          {totalCount} kayıt bulundu
         </div>
       </div>
 
-      <Table
-        columns={tableColumns}
-        data={filteredLogs}
-      />
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#6b7280' }}>
+          Yükleniyor...
+        </div>
+      ) : logs.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#6b7280', background: '#fff', borderRadius: '1rem' }}>
+          Henüz log kaydı bulunmuyor.
+        </div>
+      ) : (
+        <>
+          <Table
+            columns={tableColumns}
+            data={logs}
+          />
+
+          {totalPages > 1 && (
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center', 
+              gap: '1rem', 
+              marginTop: '2rem' 
+            }}>
+              <button
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+                style={{
+                  padding: '0.5rem 1rem',
+                  background: page === 1 ? '#f3f4f6' : '#6366f1',
+                  color: page === 1 ? '#9ca3af' : '#fff',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  cursor: page === 1 ? 'not-allowed' : 'pointer',
+                  fontWeight: 600
+                }}
+              >
+                Önceki
+              </button>
+              <span style={{ color: '#6b7280' }}>
+                Sayfa {page} / {totalPages}
+              </span>
+              <button
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                style={{
+                  padding: '0.5rem 1rem',
+                  background: page === totalPages ? '#f3f4f6' : '#6366f1',
+                  color: page === totalPages ? '#9ca3af' : '#fff',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  cursor: page === totalPages ? 'not-allowed' : 'pointer',
+                  fontWeight: 600
+                }}
+              >
+                Sonraki
+              </button>
+            </div>
+          )}
+        </>
+      )}
     </PageContainer>
   );
 };

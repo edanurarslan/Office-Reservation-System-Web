@@ -111,16 +111,7 @@ class ApiService {
     return Array.isArray(response.data) ? response.data[0] : response.data.data || response.data;
   }
 
-  // Desk methods
-  async getDesks(locationId?: string, zoneId?: string): Promise<Desk[]> {
-    const params = new URLSearchParams();
-    if (locationId) params.append('locationId', locationId);
-    if (zoneId) params.append('zoneId', zoneId);
-    
-    const response: AxiosResponse<ApiResponse<Desk[]>> = await this.api.get(`/desks?${params.toString()}`);
-    return response.data.data;
-  }
-
+  // Desk methods (deprecated - use v1 methods at the bottom)
   async getAvailableDesks(startTime: string, endTime: string): Promise<Desk[]> {
     const response: AxiosResponse<ApiResponse<Desk[]>> = await this.api.get(
       `/desks/available?startTime=${startTime}&endTime=${endTime}`
@@ -410,22 +401,67 @@ class ApiService {
   }
 
   // User management methods
-  async getUsers(page: number = 1, pageSize: number = 10): Promise<PaginatedResponse<User>> {
-    const response: AxiosResponse<ApiResponse<PaginatedResponse<User>>> = 
-      await this.api.get(`/users?page=${page}&pageSize=${pageSize}`);
-    return response.data.data;
+  async getUsers(params?: {
+    search?: string;
+    role?: string;
+    status?: string;
+    page?: number;
+    pageSize?: number;
+  }): Promise<{
+    data: any[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  }> {
+    const queryParams = new URLSearchParams();
+    if (params?.search) queryParams.append('search', params.search);
+    if (params?.role) queryParams.append('role', params.role);
+    if (params?.status) queryParams.append('status', params.status);
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.pageSize) queryParams.append('pageSize', params.pageSize.toString());
+    
+    const response = await this.api.get(`/users?${queryParams.toString()}`);
+    return response.data;
   }
 
-  async getUser(id: string): Promise<User> {
-    const response: AxiosResponse<ApiResponse<User>> = 
-      await this.api.get(`/users/${id}`);
-    return response.data.data;
+  async getUser(id: string): Promise<any> {
+    const response = await this.api.get(`/users/${id}`);
+    return response.data;
   }
 
-  async updateUser(id: string, data: Partial<User>): Promise<User> {
-    const response: AxiosResponse<ApiResponse<User>> = 
-      await this.api.put(`/users/${id}`, data);
-    return response.data.data;
+  async getUserRoles(): Promise<{ value: string; label: string }[]> {
+    const response = await this.api.get('/users/roles');
+    return response.data;
+  }
+
+  async createUser(data: {
+    name: string;
+    email: string;
+    role: string;
+    password?: string;
+    department?: string;
+    jobTitle?: string;
+    phoneNumber?: string;
+  }): Promise<any> {
+    const response = await this.api.post('/users', data);
+    return response.data;
+  }
+
+  async updateUser(id: string, data: {
+    name?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    role?: string;
+    password?: string;
+    department?: string;
+    jobTitle?: string;
+    phoneNumber?: string;
+    isActive?: boolean;
+  }): Promise<any> {
+    const response = await this.api.patch(`/users/${id}`, data);
+    return response.data;
   }
 
   async deleteUser(id: string): Promise<void> {
@@ -440,24 +476,59 @@ class ApiService {
   }
 
   async markNotificationAsRead(id: string): Promise<void> {
-    await this.api.put(`/notifications/${id}/read`, {});
+    await this.api.put(`/v1/notifications/${id}/read`, {});
   }
 
   async deleteNotification(id: string): Promise<void> {
-    await this.api.delete(`/notifications/${id}`);
+    await this.api.delete(`/v1/notifications/${id}`);
+  }
+
+  // Notification management methods (v1)
+  async getMyNotifications(unreadOnly: boolean = false): Promise<any[]> {
+    const params = unreadOnly ? '?unreadOnly=true' : '';
+    const response: AxiosResponse<any> = 
+      await this.api.get(`/v1/notifications${params}`);
+    return Array.isArray(response.data) ? response.data : response.data.data || [];
+  }
+
+  async getUnreadNotificationCount(): Promise<number> {
+    const response: AxiosResponse<any> = 
+      await this.api.get('/v1/notifications/unread-count');
+    return response.data.count || 0;
+  }
+
+  async markAllNotificationsAsRead(): Promise<void> {
+    await this.api.put('/v1/notifications/read-all', {});
+  }
+
+  async getAllNotifications(page: number = 1, pageSize: number = 20): Promise<any> {
+    const response: AxiosResponse<any> = 
+      await this.api.get(`/v1/notifications/all?page=${page}&pageSize=${pageSize}`);
+    return response.data;
+  }
+
+  async getNotificationUsers(): Promise<any[]> {
+    const response: AxiosResponse<any> = 
+      await this.api.get('/v1/notifications/users');
+    return Array.isArray(response.data) ? response.data : response.data.data || [];
+  }
+
+  async sendBulkNotification(data: { userIds: string[]; title?: string; message: string; type?: string }): Promise<any> {
+    const response: AxiosResponse<any> = 
+      await this.api.post('/v1/notifications/bulk', data);
+    return response.data;
+  }
+
+  async sendNotificationByRole(data: { roles: number[]; title?: string; message: string; type?: string }): Promise<any> {
+    const response: AxiosResponse<any> = 
+      await this.api.post('/v1/notifications/by-role', data);
+    return response.data;
   }
 
   // Health check
   async healthCheck(): Promise<HealthCheckResponse> {
     const response: AxiosResponse<ApiResponse<HealthCheckResponse>> = 
       await this.api.get('/health');
-    return response.data.data;
-  }
-
-  // Logs methods
-  async getLogs(page: number = 1, pageSize: number = 50): Promise<PaginatedResponse<any>> {
-    const response: AxiosResponse<ApiResponse<PaginatedResponse<any>>> = 
-      await this.api.get(`/logs?page=${page}&pageSize=${pageSize}`);
     return response.data.data;
   }
 
@@ -479,6 +550,281 @@ class ApiService {
       await this.api.post(`/checkouts`, { reservationId });
     return response.data.data;
   }
+
+  // Floor management methods
+  async getFloors(locationId?: string): Promise<any[]> {
+    const params = locationId ? `?locationId=${locationId}` : '';
+    const response: AxiosResponse<any> = 
+      await this.api.get(`/v1/floors${params}`);
+    return Array.isArray(response.data) ? response.data : response.data.data || [];
+  }
+
+  async getFloor(id: string): Promise<any> {
+    const response: AxiosResponse<any> = 
+      await this.api.get(`/v1/floors/${id}`);
+    return response.data.data || response.data;
+  }
+
+  async createFloor(data: { name: string; floorNumber: number; description?: string; floorPlanImageUrl?: string; locationId: string }): Promise<any> {
+    const response: AxiosResponse<any> = 
+      await this.api.post('/v1/floors', data);
+    return response.data.data || response.data;
+  }
+
+  async updateFloor(id: string, data: { name?: string; floorNumber?: number; description?: string; isActive?: boolean; floorPlanImageUrl?: string }): Promise<any> {
+    const response: AxiosResponse<any> = 
+      await this.api.put(`/v1/floors/${id}`, data);
+    return response.data.data || response.data;
+  }
+
+  async deleteFloor(id: string): Promise<void> {
+    await this.api.delete(`/v1/floors/${id}`);
+  }
+
+  // Zone management methods
+  async getZones(floorId?: string): Promise<any[]> {
+    const params = floorId ? `?floorId=${floorId}` : '';
+    const response: AxiosResponse<any> = 
+      await this.api.get(`/v1/zones${params}`);
+    return Array.isArray(response.data) ? response.data : response.data.data || [];
+  }
+
+  async getZone(id: string): Promise<any> {
+    const response: AxiosResponse<any> = 
+      await this.api.get(`/v1/zones/${id}`);
+    return response.data.data || response.data;
+  }
+
+  async createZone(data: { name: string; description?: string; zoneType?: string; maxCapacity?: number; floorId: string }): Promise<any> {
+    const response: AxiosResponse<any> = 
+      await this.api.post('/v1/zones', data);
+    return response.data.data || response.data;
+  }
+
+  async updateZone(id: string, data: { name?: string; description?: string; zoneType?: string; isActive?: boolean; maxCapacity?: number }): Promise<any> {
+    const response: AxiosResponse<any> = 
+      await this.api.put(`/v1/zones/${id}`, data);
+    return response.data.data || response.data;
+  }
+
+  async deleteZone(id: string): Promise<void> {
+    await this.api.delete(`/v1/zones/${id}`);
+  }
+
+  // Desk management methods (v1)
+  async getDesks(floorId?: string, zoneId?: string): Promise<any[]> {
+    const params = new URLSearchParams();
+    if (floorId) params.append('floorId', floorId);
+    if (zoneId) params.append('zoneId', zoneId);
+    const queryString = params.toString() ? `?${params.toString()}` : '';
+    const response: AxiosResponse<any> = 
+      await this.api.get(`/v1/desks${queryString}`);
+    return Array.isArray(response.data) ? response.data : response.data.data || [];
+  }
+
+  async getDesk(id: string): Promise<any> {
+    const response: AxiosResponse<any> = 
+      await this.api.get(`/v1/desks/${id}`);
+    return response.data.data || response.data;
+  }
+
+  async createDesk(data: { name: string; description?: string; zoneId: string; hasMonitor?: boolean; hasKeyboard?: boolean; hasMouse?: boolean; hasDockingStation?: boolean; xCoordinate?: number; yCoordinate?: number }): Promise<any> {
+    const response: AxiosResponse<any> = 
+      await this.api.post('/v1/desks', data);
+    return response.data.data || response.data;
+  }
+
+  async updateDesk(id: string, data: { name?: string; description?: string; isActive?: boolean; hasMonitor?: boolean; hasKeyboard?: boolean; hasMouse?: boolean; hasDockingStation?: boolean; xCoordinate?: number; yCoordinate?: number }): Promise<any> {
+    const response: AxiosResponse<any> = 
+      await this.api.put(`/v1/desks/${id}`, data);
+    return response.data.data || response.data;
+  }
+
+  async updateDeskPosition(id: string, xCoordinate: number, yCoordinate: number): Promise<any> {
+    const response: AxiosResponse<any> = 
+      await this.api.put(`/v1/desks/${id}/position`, { xCoordinate, yCoordinate });
+    return response.data.data || response.data;
+  }
+
+  async updateDeskPositions(positions: { deskId: string; xCoordinate: number; yCoordinate: number }[]): Promise<any> {
+    const response: AxiosResponse<any> = 
+      await this.api.put('/v1/desks/positions', positions);
+    return response.data.data || response.data;
+  }
+
+  async deleteDesk(id: string): Promise<void> {
+    await this.api.delete(`/v1/desks/${id}`);
+  }
+
+  // ==================== LOGS ====================
+  async getLogs(params?: {
+    search?: string;
+    action?: string;
+    status?: string;
+    entityType?: string;
+    userId?: string;
+    from?: string;
+    to?: string;
+    page?: number;
+    pageSize?: number;
+  }): Promise<{ data: any[]; totalCount: number; page: number; pageSize: number; totalPages: number }> {
+    const queryParams = new URLSearchParams();
+    if (params?.search) queryParams.append('search', params.search);
+    if (params?.action) queryParams.append('action', params.action);
+    if (params?.status) queryParams.append('status', params.status);
+    if (params?.entityType) queryParams.append('entityType', params.entityType);
+    if (params?.userId) queryParams.append('userId', params.userId);
+    if (params?.from) queryParams.append('from', params.from);
+    if (params?.to) queryParams.append('to', params.to);
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.pageSize) queryParams.append('pageSize', params.pageSize.toString());
+    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+    const response: AxiosResponse<any> = 
+      await this.api.get(`/v1/logs${queryString}`);
+    return response.data;
+  }
+
+  async getLogActions(): Promise<string[]> {
+    const response: AxiosResponse<string[]> = 
+      await this.api.get('/v1/logs/actions');
+    return response.data;
+  }
+
+  async getLogEntityTypes(): Promise<string[]> {
+    const response: AxiosResponse<string[]> = 
+      await this.api.get('/v1/logs/entity-types');
+    return response.data;
+  }
+
+  async getLogStats(): Promise<{
+    totalLogs: number;
+    todayLogs: number;
+    weekLogs: number;
+    errorLogs: number;
+    actionStats: { action: string; count: number }[];
+  }> {
+    const response: AxiosResponse<any> = 
+      await this.api.get('/v1/logs/stats');
+    return response.data;
+  }
+
+  async createLog(data: {
+    userId?: string;
+    action: string;
+    entityType: string;
+    entityId?: string;
+    oldValues?: string;
+    newValues?: string;
+    additionalData?: string;
+  }): Promise<{ id: string; message: string }> {
+    const response: AxiosResponse<any> = 
+      await this.api.post('/v1/logs', data);
+    return response.data;
+  }
+
+  async cleanupOldLogs(olderThanDays: number = 90): Promise<{ message: string }> {
+    const response: AxiosResponse<any> = 
+      await this.api.delete(`/v1/logs/cleanup?olderThanDays=${olderThanDays}`);
+    return response.data;
+  }
+
+  // ==================== APPROVAL METHODS ====================
+
+  async getApprovals(params?: {
+    status?: string;
+    type?: string;
+    page?: number;
+    pageSize?: number;
+  }): Promise<{
+    data: ApprovalRequest[];
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;
+    pageSize: number;
+  }> {
+    const queryParams = new URLSearchParams();
+    if (params?.status) queryParams.append('status', params.status);
+    if (params?.type) queryParams.append('type', params.type);
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.pageSize) queryParams.append('pageSize', params.pageSize.toString());
+    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+    const response: AxiosResponse<any> = await this.api.get(`/v1/approvals${queryString}`);
+    return response.data;
+  }
+
+  async getApproval(id: string): Promise<ApprovalRequest> {
+    const response: AxiosResponse<any> = await this.api.get(`/v1/approvals/${id}`);
+    return response.data;
+  }
+
+  async createApproval(data: {
+    requesterId: string;
+    type: string;
+    description?: string;
+    requestData?: string;
+    relatedEntityId?: string;
+    relatedEntityType?: string;
+  }): Promise<ApprovalRequest> {
+    const response: AxiosResponse<any> = await this.api.post('/v1/approvals', data);
+    return response.data;
+  }
+
+  async approveRequest(id: string, data?: {
+    reviewerId?: string;
+    notes?: string;
+  }): Promise<{ message: string; id: string; status: string; reviewedAt: string }> {
+    const response: AxiosResponse<any> = await this.api.put(`/v1/approvals/${id}/approve`, data || {});
+    return response.data;
+  }
+
+  async rejectRequest(id: string, data?: {
+    reviewerId?: string;
+    notes?: string;
+    rejectionReason?: string;
+  }): Promise<{ message: string; id: string; status: string; reviewedAt: string; rejectionReason?: string }> {
+    const response: AxiosResponse<any> = await this.api.put(`/v1/approvals/${id}/reject`, data || {});
+    return response.data;
+  }
+
+  async deleteApproval(id: string): Promise<{ message: string }> {
+    const response: AxiosResponse<any> = await this.api.delete(`/v1/approvals/${id}`);
+    return response.data;
+  }
+
+  async getApprovalPendingCount(): Promise<{ pendingCount: number }> {
+    const response: AxiosResponse<any> = await this.api.get('/v1/approvals/pending-count');
+    return response.data;
+  }
+
+  async getApprovalStats(): Promise<{
+    total: number;
+    pending: number;
+    approved: number;
+    rejected: number;
+    byType: { type: string; count: number }[];
+  }> {
+    const response: AxiosResponse<any> = await this.api.get('/v1/approvals/stats');
+    return response.data;
+  }
+}
+
+// ApprovalRequest type
+export interface ApprovalRequest {
+  id: string;
+  userName: string;
+  userId: string;
+  type: string;
+  requestDate: string;
+  status: string;
+  description?: string;
+  requestData?: string;
+  relatedEntityId?: string;
+  relatedEntityType?: string;
+  reviewerId?: string;
+  reviewerName?: string;
+  reviewedAt?: string;
+  reviewNotes?: string;
+  rejectionReason?: string;
 }
 
 export default new ApiService();

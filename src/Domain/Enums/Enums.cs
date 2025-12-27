@@ -43,3 +43,19 @@ public enum RuleType
     Booking = 3,
     WorkingHours = 4
 }
+
+public enum ApprovalRequestType
+{
+    Reservation = 1,
+    UserSignup = 2,
+    LocationChange = 3,
+    RoleChange = 4,
+    Other = 5
+}
+
+public enum ApprovalStatus
+{
+    Pending = 1,
+    Approved = 2,
+    Rejected = 3
+}

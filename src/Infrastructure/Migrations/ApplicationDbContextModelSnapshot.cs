@@ -79,7 +79,7 @@ namespace OfisYonetimSistemi.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("OfisYonetimSistemi.Domain.Entities.CheckIn", b =>
@@ -130,7 +130,7 @@ namespace OfisYonetimSistemi.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CheckIns");
+                    b.ToTable("CheckIns", (string)null);
                 });
 
             modelBuilder.Entity("OfisYonetimSistemi.Domain.Entities.Desk", b =>
@@ -194,7 +194,7 @@ namespace OfisYonetimSistemi.Infrastructure.Migrations
 
                     b.HasIndex("ZoneId");
 
-                    b.ToTable("Desks");
+                    b.ToTable("Desks", (string)null);
                 });
 
             modelBuilder.Entity("OfisYonetimSistemi.Domain.Entities.Floor", b =>
@@ -241,7 +241,7 @@ namespace OfisYonetimSistemi.Infrastructure.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("Floors");
+                    b.ToTable("Floors", (string)null);
                 });
 
             modelBuilder.Entity("OfisYonetimSistemi.Domain.Entities.Location", b =>
@@ -307,7 +307,7 @@ namespace OfisYonetimSistemi.Infrastructure.Migrations
 
                     b.HasIndex("Name");
 
-                    b.ToTable("Locations");
+                    b.ToTable("Locations", (string)null);
                 });
 
             modelBuilder.Entity("OfisYonetimSistemi.Domain.Entities.QrToken", b =>
@@ -363,7 +363,7 @@ namespace OfisYonetimSistemi.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("QrTokens");
+                    b.ToTable("QrTokens", (string)null);
                 });
 
             modelBuilder.Entity("OfisYonetimSistemi.Domain.Entities.Reservation", b =>
@@ -455,7 +455,7 @@ namespace OfisYonetimSistemi.Infrastructure.Migrations
                     b.HasIndex("ResourceType", "ResourceId", "StartsAt", "EndsAt", "Status")
                         .HasDatabaseName("IX_Reservations_ConflictDetection");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("Reservations", (string)null);
                 });
 
             modelBuilder.Entity("OfisYonetimSistemi.Domain.Entities.Room", b =>
@@ -515,7 +515,7 @@ namespace OfisYonetimSistemi.Infrastructure.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("Rooms");
+                    b.ToTable("Rooms", (string)null);
                 });
 
             modelBuilder.Entity("OfisYonetimSistemi.Domain.Entities.Rule", b =>
@@ -576,7 +576,7 @@ namespace OfisYonetimSistemi.Infrastructure.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("Rules");
+                    b.ToTable("Rules", (string)null);
                 });
 
             modelBuilder.Entity("OfisYonetimSistemi.Domain.Entities.User", b =>
@@ -654,7 +654,7 @@ namespace OfisYonetimSistemi.Infrastructure.Migrations
 
                     b.HasIndex("ManagerId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("OfisYonetimSistemi.Domain.Entities.Zone", b =>
@@ -702,7 +702,7 @@ namespace OfisYonetimSistemi.Infrastructure.Migrations
 
                     b.HasIndex("FloorId");
 
-                    b.ToTable("Zones");
+                    b.ToTable("Zones", (string)null);
                 });
 
             modelBuilder.Entity("OfisYonetimSistemi.Domain.Entities.AuditLog", b =>

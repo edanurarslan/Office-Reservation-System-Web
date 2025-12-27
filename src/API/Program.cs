@@ -71,12 +71,18 @@ builder.Services.AddCors(options =>
 
     options.AddPolicy("AllowReactApp", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins("http://localhost:5173", "http://localhost:5174")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
     });
 });
+
+// Add HttpContextAccessor for AuditLogService
+builder.Services.AddHttpContextAccessor();
+
+// Add AuditLog Service
+builder.Services.AddScoped<OfisYonetimSistemi.Infrastructure.Services.IAuditLogService, OfisYonetimSistemi.Infrastructure.Services.AuditLogService>();
 
 var app = builder.Build();
 

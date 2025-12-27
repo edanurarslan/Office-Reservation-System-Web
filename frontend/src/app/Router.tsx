@@ -23,6 +23,7 @@ import {
   LocationsPage as AdminLocationsPage,
   LogsPage as AdminLogsPage,
   NotificationsPage as AdminNotificationsPage,
+  OverviewPage as AdminOverviewPage,
   ReportsPage as AdminReportsPage,
   RulesPage,
   UsersPage as AdminUsersPage,
@@ -100,6 +101,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/support" element={<SupportPage />} />
         
         {/* Admin Routes */}
+        <Route path="/admin/overview" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<AdminOverviewPage />} />} />
         <Route path="/admin/locations" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<AdminLocationsPage />} />} />
         <Route path="/admin/floorplan" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<FloorplanPage />} />} />
         <Route path="/admin/rules" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<RulesPage />} />} />

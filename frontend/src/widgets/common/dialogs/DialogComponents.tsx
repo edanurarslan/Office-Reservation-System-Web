@@ -38,16 +38,17 @@ export const Modal: React.FC<ModalProps> = ({
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(0, 0, 0, 0.5)',
+        background: 'rgba(30, 41, 59, 0.55)', // dark overlay
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 50,
+        zIndex: 9999,
       }}
       onClick={onClose}
     >
       <div
         className={`${getSizeClasses()} bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto`}
+        style={{ zIndex: 10000, boxShadow: '0 8px 40px rgba(30,41,59,0.18)', background: '#fff' }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -58,6 +59,9 @@ export const Modal: React.FC<ModalProps> = ({
             justifyContent: 'space-between',
             padding: '1.5rem',
             borderBottom: '1px solid #e0e7ff',
+            background: '#fff',
+            borderTopLeftRadius: '1rem',
+            borderTopRightRadius: '1rem',
           }}
         >
           <h2
@@ -89,7 +93,7 @@ export const Modal: React.FC<ModalProps> = ({
         </div>
 
         {/* Body */}
-        <div style={{ padding: '1.5rem' }}>{children}</div>
+        <div style={{ padding: '1.5rem', background: '#fff', borderBottomLeftRadius: '1rem', borderBottomRightRadius: '1rem' }}>{children}</div>
       </div>
     </div>
   );
