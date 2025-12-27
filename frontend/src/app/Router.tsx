@@ -5,7 +5,7 @@ import { UserRole } from '../types';
 // Auth pages
 import { LoginPage, RegisterPage, SplashPage } from '../pages/auth';
 // Employee pages
-import { DashboardPage, ProfilePage, ReservationsPage, QrPage, ReportsPage, SupportPage, LocationsPage, NotificationsPage, SettingsPage } from '../pages/employee';
+import { DashboardPage as EmployeeDashboardPage, ProfilePage, ReservationsPage, ReportsPage, SupportPage, LocationsPage, NotificationsPage, SettingsPage } from '../pages/employee';
 // Manager pages
 import {
   DashboardPage as ManagerDashboardPage,
@@ -23,10 +23,10 @@ import {
   LocationsPage as AdminLocationsPage,
   LogsPage as AdminLogsPage,
   NotificationsPage as AdminNotificationsPage,
-  OverviewPage as AdminOverviewPage,
   ReportsPage as AdminReportsPage,
   RulesPage,
   UsersPage as AdminUsersPage,
+  OverviewPage as AdminOverviewPage,
 } from '../pages/admin';
 // Common widgets
 import { Layout, LoadingSpinner } from '../widgets';
@@ -50,14 +50,20 @@ const ProtectedLayout: React.FC = () => {
 };
 
 const PublicLayout: React.FC = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
 
   if (isLoading) {
     return <LoadingSpinner className="min-h-screen" />;
   }
 
+  if (isAuthenticated && user?.role === 'Admin') {
+    return <Navigate to="/admin/overview" replace />;
+  }
+  if (isAuthenticated && user?.role === 'Manager') {
+    return <Navigate to="/manager/dashboard" replace />;
+  }
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/employee/dashboard" replace />;
   }
 
   return <Outlet />;
@@ -66,7 +72,9 @@ const PublicLayout: React.FC = () => {
 const RoleProtectedRoute: React.FC<{ allowedRoles: UserRole[]; element: React.ReactNode }> = ({ allowedRoles, element }) => {
   const { user } = useAuth();
   if (!user || !allowedRoles.includes(user.role)) {
-    return <Navigate to="/dashboard" replace />;
+    if (user?.role === 'Admin') return <Navigate to="/admin/overview" replace />;
+    if (user?.role === 'Manager') return <Navigate to="/manager/dashboard" replace />;
+    return <Navigate to="/employee/dashboard" replace />;
   }
   return <>{element}</>;
 };
@@ -81,47 +89,48 @@ const AppRoutes: React.FC = () => {
         <Route path="/register" element={<RegisterPage />} />
       </Route>
 
-      <Route element={<ProtectedLayout />}> 
-        {/* Employee Routes */}
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/employee/dashboard" element={<DashboardPage />} />
-        <Route path="/employee/reservations" element={<ReservationsPage />} />
-        <Route path="/employee/locations" element={<LocationsPage />} />
-        <Route path="/employee/notifications" element={<NotificationsPage />} />
-        <Route path="/employee/settings" element={<SettingsPage />} />
-        <Route path="/employee/profile" element={<ProfilePage />} />
-        <Route path="/employee/qr" element={<QrPage />} />
-        <Route path="/employee/reports" element={<ReportsPage />} />
-        <Route path="/employee/support" element={<SupportPage />} />
-        
-        {/* Legacy Routes */}
-        <Route path="/reservations" element={<ReservationsPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/qr" element={<QrPage />} />
-        <Route path="/support" element={<SupportPage />} />
-        
-        {/* Admin Routes */}
-        <Route path="/admin/overview" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<AdminOverviewPage />} />} />
-        <Route path="/admin/locations" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<AdminLocationsPage />} />} />
-        <Route path="/admin/floorplan" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<FloorplanPage />} />} />
-        <Route path="/admin/rules" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<RulesPage />} />} />
-        <Route path="/admin/notifications" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<AdminNotificationsPage />} />} />
-        <Route path="/admin/approval" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<ApprovalPage />} />} />
-        <Route path="/admin/logs" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<AdminLogsPage />} />} />
-        <Route path="/admin/backup" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<BackupPage />} />} />
-        <Route path="/admin/users" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<AdminUsersPage />} />} />
-        <Route path="/admin/reports" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<AdminReportsPage />} />} />
-        
-        {/* Manager Routes */}
-        <Route path="/manager/dashboard" element={<RoleProtectedRoute allowedRoles={[UserRole.Manager]} element={<ManagerDashboardPage />} />} />
-        <Route path="/manager/users" element={<RoleProtectedRoute allowedRoles={[UserRole.Manager]} element={<ManagerUsersPage />} />} />
-        <Route path="/manager/reservations" element={<RoleProtectedRoute allowedRoles={[UserRole.Manager]} element={<ManagerReservationsPage />} />} />
-        <Route path="/manager/reports" element={<RoleProtectedRoute allowedRoles={[UserRole.Manager]} element={<ManagerReportsPage />} />} />
-        <Route path="/manager/notifications" element={<RoleProtectedRoute allowedRoles={[UserRole.Manager]} element={<ManagerNotificationsPage />} />} />
-        <Route path="/manager/logs" element={<RoleProtectedRoute allowedRoles={[UserRole.Manager]} element={<ManagerLogsPage />} />} />
-      </Route>
+  <Route element={<ProtectedLayout />}> 
+  {/* Employee Routes */}
+  <Route path="/employee/dashboard" element={<EmployeeDashboardPage />} />
+    <Route path="/employee/reservations" element={<ReservationsPage />} />
+    <Route path="/employee/locations" element={<LocationsPage />} />
+    <Route path="/employee/notifications" element={<NotificationsPage />} />
+    <Route path="/employee/settings" element={<SettingsPage />} />
+    <Route path="/employee/profile" element={<ProfilePage />} />
+    <Route path="/employee/reports" element={<ReportsPage />} />
+    <Route path="/employee/support" element={<SupportPage />} />
+    {/* Legacy Routes */}
+    <Route path="/reservations" element={<ReservationsPage />} />
+    <Route path="/profile" element={<ProfilePage />} />
+    <Route path="/support" element={<SupportPage />} />
+  {/* Admin Routes */}
+  <Route path="/admin/overview" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<AdminOverviewPage />} />} />
+    <Route path="/admin/locations" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<AdminLocationsPage />} />} />
+    <Route path="/admin/floorplan" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<FloorplanPage />} />} />
+    <Route path="/admin/rules" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<RulesPage />} />} />
+    <Route path="/admin/notifications" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<AdminNotificationsPage />} />} />
+    <Route path="/admin/approval" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<ApprovalPage />} />} />
+    <Route path="/admin/logs" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<AdminLogsPage />} />} />
+    <Route path="/admin/backup" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<BackupPage />} />} />
+    <Route path="/admin/users" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<AdminUsersPage />} />} />
+    <Route path="/admin/reports" element={<RoleProtectedRoute allowedRoles={[UserRole.Admin]} element={<AdminReportsPage />} />} />
+    {/* Manager Routes */}
+    <Route path="/manager/dashboard" element={<RoleProtectedRoute allowedRoles={[UserRole.Manager]} element={<ManagerDashboardPage />} />} />
+    <Route path="/manager/users" element={<RoleProtectedRoute allowedRoles={[UserRole.Manager]} element={<ManagerUsersPage />} />} />
+    <Route path="/manager/reservations" element={<RoleProtectedRoute allowedRoles={[UserRole.Manager]} element={<ManagerReservationsPage />} />} />
+    <Route path="/manager/reports" element={<RoleProtectedRoute allowedRoles={[UserRole.Manager]} element={<ManagerReportsPage />} />} />
+    <Route path="/manager/notifications" element={<RoleProtectedRoute allowedRoles={[UserRole.Manager]} element={<ManagerNotificationsPage />} />} />
+    <Route path="/manager/logs" element={<RoleProtectedRoute allowedRoles={[UserRole.Manager]} element={<ManagerLogsPage />} />} />
+  </Route>
 
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={
+        (() => {
+          const { user } = useAuth();
+          if (user?.role === 'Admin') return <Navigate to="/admin/overview" replace />;
+          if (user?.role === 'Manager') return <Navigate to="/manager/dashboard" replace />;
+          return <Navigate to="/employee/dashboard" replace />;
+        })()
+      } />
     </Routes>
   );
 };

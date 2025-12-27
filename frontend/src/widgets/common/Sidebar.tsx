@@ -49,11 +49,6 @@ const Sidebar: React.FC = () => {
       icon: Bell,
     },
     {
-      name: 'QR Kod',
-      path: '/employee/qr',
-      icon: QrCode,
-    },
-    {
       name: 'Raporlar',
       path: '/employee/reports',
       icon: BarChart3,

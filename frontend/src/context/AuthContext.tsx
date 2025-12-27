@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { User, LoginRequest, RegisterRequest } from '../types';
 import apiService from '../utils/services/api';
 
@@ -12,6 +13,10 @@ interface AuthContextType {
   refreshUser: () => Promise<void>;
 }
 
+interface AuthProviderProps {
+  children: React.ReactNode;
+}
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
@@ -22,128 +27,22 @@ export const useAuth = () => {
   return context;
 };
 
-interface AuthProviderProps {
-  children: React.ReactNode;
-}
-
-
-const DEMO_AUTH_EMAIL = 'admin@ofis.com';
-const DEMO_AUTH_PASSWORD = 'Admin123!';
-const DEMO_USER_EMAIL = 'user@ofis.com';
-const DEMO_USER_PASSWORD = 'User123!';
-const DEMO_MANAGER_EMAIL = 'manager@ofis.com';
-const DEMO_MANAGER_PASSWORD = 'ofis123';
-
-const demoUser: User = {
-  id: '11111111-1111-1111-1111-111111111111',
-  firstName: 'Admin',
-  lastName: 'User',
-  email: DEMO_AUTH_EMAIL,
-  role: 'Admin',
-  isActive: true,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-};
-
-const demoNormalUser: User = {
-  id: '22222222-2222-2222-2222-222222222222',
-  firstName: 'Normal',
-  lastName: 'User',
-  email: DEMO_USER_EMAIL,
-  role: 'Employee',
-  isActive: true,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-};
-
-const demoManagerUser: User = {
-  id: '33333333-3333-3333-3333-333333333333',
-  firstName: 'Manager',
-  lastName: 'User',
-  email: DEMO_MANAGER_EMAIL,
-  role: 'Manager',
-  isActive: true,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-};
-
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   const isAuthenticated = !!user;
 
-  // Initialize auth state on app start
-  useEffect(() => {
-    const initializeAuth = async () => {
-      const token = localStorage.getItem('token');
-      const storedUser = localStorage.getItem('user');
-      const authMode = localStorage.getItem('authMode');
-
-      if (token && storedUser) {
-        try {
-          const parsedUser: User = JSON.parse(storedUser);
-          setUser(parsedUser);
-
-          if (authMode === 'demo') {
-            // Demo oturumunda ağ çağrısı yapmadan kullanıcıyı doğrula
-            setIsLoading(false);
-            return;
-          }
-
-          await refreshUser();
-        } catch (error) {
-          console.error('Error initializing auth:', error);
-          logout();
-        }
-      }
-      setIsLoading(false);
-    };
-
-    initializeAuth();
-  }, []);
-
-  const login = async (credentials: LoginRequest) => {
-    try {
-      setIsLoading(true);
-      const response = await apiService.login(credentials);
-      // Store token and user in localStorage
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify(response.user));
-      localStorage.removeItem('authMode');
-      setUser(response.user);
-    } catch (error: any) {
-      console.error('Login error:', error);
-      // Don't fall back to demo mode - throw the error
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const register = async (data: RegisterRequest) => {
-    try {
-      setIsLoading(true);
-      const newUser = await apiService.register(data);
-      
-      // After registration, automatically log in
-      await login({ email: data.email, password: data.password });
-    } catch (error) {
-      console.error('Registration error:', error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const logout = () => {
+  // Logout fonksiyonunu useCallback ile sarmalıyoruz çünkü diğer fonksiyonlar içinde bağımlılık olarak kullanılacak
+  const logout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('authMode');
     setUser(null);
-  };
+  }, []);
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     try {
       if (localStorage.getItem('authMode') === 'demo') {
         const storedUser = localStorage.getItem('user');
@@ -162,6 +61,73 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       logout();
       throw error;
     }
+  }, [logout]);
+
+  // Uygulama başladığında durumu initialize et
+  useEffect(() => {
+    const initializeAuth = async () => {
+      const token = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
+      const authMode = localStorage.getItem('authMode');
+
+      if (token && storedUser) {
+        try {
+          const parsedUser: User = JSON.parse(storedUser);
+          setUser(parsedUser);
+
+          if (authMode !== 'demo') {
+            await refreshUser();
+          }
+        } catch (error) {
+          console.error('Error initializing auth:', error);
+          logout();
+        }
+      }
+      setIsLoading(false);
+    };
+
+    initializeAuth();
+  }, [logout, refreshUser]);
+
+  const login = async (credentials: LoginRequest) => {
+    try {
+      setIsLoading(true);
+      const response = await apiService.login(credentials);
+      
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(response.user));
+      localStorage.removeItem('authMode');
+      setUser(response.user);
+
+      // Rol bazlı yönlendirme
+      const role = response.user.role;
+      if (role === 'Admin') {
+        navigate('/admin/overview', { replace: true });
+      } else if (role === 'Manager') {
+        navigate('/manager/dashboard', { replace: true }); // Manager için kendi dashboard
+      } else {
+        navigate('/employee/dashboard', { replace: true });
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const register = async (data: RegisterRequest) => {
+    try {
+      setIsLoading(true);
+      await apiService.register(data);
+      // Kayıt sonrası otomatik giriş
+      await login({ email: data.email, password: data.password });
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const value: AuthContextType = {
@@ -174,9 +140,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     refreshUser,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+
+export default AuthProvider;

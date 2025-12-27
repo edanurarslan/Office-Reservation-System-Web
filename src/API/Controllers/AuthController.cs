@@ -108,8 +108,30 @@ public class AuthController : ControllerBase
         
         return Ok(new { IsValid = isValid });
     }
-}
 
+    [HttpGet("profile")]
+    [Authorize]
+    public async Task<IActionResult> Profile([FromServices] OfisYonetimSistemi.Infrastructure.Data.ApplicationDbContext db)
+    {
+        var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
+            return Unauthorized();
+
+        var user = await db.Users.FindAsync(userId);
+        if (user == null)
+            return NotFound();
+
+        return Ok(new {
+            user.Id,
+            user.Email,
+            user.FirstName,
+            user.LastName,
+            user.Role,
+            user.Department,
+            user.JobTitle
+        });
+    }
+}
 
 public record LoginRequest(string Email, string Password);
 public record RefreshTokenRequest(string RefreshToken);

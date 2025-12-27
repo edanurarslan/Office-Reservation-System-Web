@@ -2,7 +2,7 @@
 export { default as DashboardPage } from './DashboardPage';
 export { default as ProfilePage } from './ProfilePage';
 export { default as ReservationsPage } from './ReservationsPage';
-export { default as QrPage } from './QrPage';
+
 export { default as ReportsPage } from './ReportsPage';
 export { default as SupportPage } from './SupportPage';
 export { default as LocationsPage } from './LocationsPage';

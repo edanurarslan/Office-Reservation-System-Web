@@ -6,7 +6,7 @@ export {
   DashboardPage,
   ProfilePage,
   ReservationsPage,
-  QrPage,
+
   SupportPage,
   ReportsPage as EmployeeReportsPage,
   LocationsPage,

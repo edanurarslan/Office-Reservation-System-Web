@@ -1,22 +1,49 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { PageContainer, PageHeader, Table } from '../../widgets';
 import { CheckCircle, XCircle, Clock } from 'lucide-react';
+import type { Reservation as BackendReservation } from '../../types';
 
-interface Reservation {
+// Table display type (decoupled from backend)
+interface TableReservation {
   id: string;
   desk: string;
   employee: string;
   date: string;
   time: string;
-  status: 'Pending' | 'Approved' | 'Rejected';
+  status: string;
 }
 
 const ManagerReservationsPage: React.FC = () => {
-  const [reservations] = useState<Reservation[]>([
-    { id: '1', desk: 'A101', employee: 'Ahmet Yılmaz', date: '2024-01-16', time: '09:00-10:00', status: 'Pending' },
-    { id: '2', desk: 'B202', employee: 'Fatma Kaya', date: '2024-01-16', time: '14:00-15:00', status: 'Pending' },
-    { id: '3', desk: 'A105', employee: 'Can Demirel', date: '2024-01-17', time: '10:00-11:00', status: 'Approved' },
-  ]);
+  const [reservations, setReservations] = useState<TableReservation[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReservations = async () => {
+      setLoading(true);
+      try {
+        // API'den rezervasyonları çek
+        const res = await import('../../utils/services/api').then(m => m.default.getReservations());
+        // res: PaginatedResponse<BackendReservation>
+        const data: BackendReservation[] = Array.isArray(res) ? res : (res?.data || []);
+        // Map backend Reservation to table display type
+        const mapped: TableReservation[] = data.map((r) => ({
+          id: r.id,
+          desk: r.resourceType === 'Desk' ? (r.deskName || r.desk?.name || '-') : (r.roomName || r.room?.name || '-'),
+          employee: r.user ? `${r.user.firstName} ${r.user.lastName}` : '-',
+          date: r.startsAt ? r.startsAt.split('T')[0] : '-',
+          time: r.startsAt && r.endsAt ? `${r.startsAt.split('T')[1]?.slice(0,5)}-${r.endsAt.split('T')[1]?.slice(0,5)}` : '-',
+          status: r.status || 'Pending',
+        }));
+        setReservations(mapped);
+      } catch (e) {
+        setReservations([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchReservations();
+  }, []);
 
   const statusConfig: Record<string, { bg: string; color: string; icon: React.ReactNode; label: string }> = {
     Pending: { bg: '#fef3c7', color: '#92400e', icon: <Clock style={{ width: '16px', height: '16px' }} />, label: 'Beklemede' },

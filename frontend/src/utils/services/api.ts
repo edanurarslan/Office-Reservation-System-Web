@@ -26,6 +26,11 @@ import type {
 } from '../../types';
 
 class ApiService {
+  // Support request
+  async createSupportRequest(data: { subject: string; message: string }): Promise<any> {
+    const response: AxiosResponse<any> = await this.api.post('/v1/support/request', data);
+    return response.data;
+  }
   private api: AxiosInstance;
 
   constructor() {
@@ -173,17 +178,7 @@ class ApiService {
   }
 
   // QR Code methods
-  async generateQrCode(reservationId: string): Promise<{ qrCodeData: string; token: string }> {
-    const response: AxiosResponse<ApiResponse<{ qrCodeData: string; token: string }>> = 
-      await this.api.post(`/qr/generate/${reservationId}`);
-    return response.data.data;
-  }
 
-  async scanQrCode(token: string): Promise<{ reservation: Reservation; isValid: boolean }> {
-    const response: AxiosResponse<ApiResponse<{ reservation: Reservation; isValid: boolean }>> = 
-      await this.api.post('/qr/scan', { token });
-    return response.data.data;
-  }
 
   // HeatMap methods (Phase 3)
   async getCurrentHeatMap(locationId?: string): Promise<HeatMapData> {
