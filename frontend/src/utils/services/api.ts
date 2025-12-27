@@ -26,6 +26,19 @@ import type {
 } from '../../types';
 
 class ApiService {
+  async createLocation(data: { name: string; address: string }): Promise<Location> {
+    const response: AxiosResponse<any> = await this.api.post('/v1/locations', data);
+    return response.data.data || response.data;
+  }
+
+  async updateLocation(id: string, data: { name: string; address: string; isActive: boolean }): Promise<Location> {
+    const response: AxiosResponse<any> = await this.api.put(`/v1/locations/${id}`, data);
+    return response.data.data || response.data;
+  }
+
+  async deleteLocation(id: string): Promise<void> {
+    await this.api.delete(`/v1/locations/${id}`);
+  }
   // Support request
   async createSupportRequest(data: { subject: string; message: string }): Promise<any> {
     const response: AxiosResponse<any> = await this.api.post('/v1/support/request', data);
@@ -322,18 +335,18 @@ class ApiService {
 
   async createRule(data: CreateRuleRequest): Promise<Rule> {
     const response: AxiosResponse<ApiResponse<Rule>> = 
-      await this.api.post('/rules', data);
+      await this.api.post('/v1/rules', data);
     return response.data.data;
   }
 
   async updateRule(id: string, data: CreateRuleRequest): Promise<Rule> {
     const response: AxiosResponse<ApiResponse<Rule>> = 
-      await this.api.put(`/rules/${id}`, data);
+      await this.api.put(`/v1/rules/${id}`, data);
     return response.data.data;
   }
 
   async deleteRule(id: string): Promise<void> {
-    await this.api.delete(`/rules/${id}`);
+  await this.api.delete(`/v1/rules/${id}`);
   }
 
   async evaluateRules(context: any): Promise<RuleEvaluationResult[]> {

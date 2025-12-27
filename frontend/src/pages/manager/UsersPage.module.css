@@ -1,0 +1,197 @@
+.usersSelectWrapper {
+  background: #f1f5ff;
+  border-radius: 0.8rem;
+  box-shadow: 0 1px 4px 0 rgba(99,102,241,0.04);
+  padding: 0.1rem 0.5rem;
+  display: flex;
+  align-items: center;
+  height: 2.7rem;
+  margin-left: 1rem;
+}
+.usersSelectWrapper {
+  background: #f1f5ff;
+  border-radius: 0.8rem;
+  box-shadow: 0 1px 4px 0 rgba(99,102,241,0.04);
+  padding: 0.1rem 0.5rem;
+  display: flex;
+  align-items: center;
+  height: 2.7rem;
+}
+.usersSelectWrapper select {
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  color: #334155;
+  padding: 0.5rem 1.2rem;
+  border-radius: 0.8rem;
+  outline: none;
+  width: 100%;
+  appearance: none;
+  box-shadow: none;
+}
+.usersSelectWrapper select:focus {
+  background: #e0e7ff;
+}
+.usersFilterInput {
+  width: 100%;
+  padding: 0.7rem 1.2rem 0.7rem 2.2rem;
+  border: none;
+  background: #f1f5ff;
+  border-radius: 0.8rem;
+  font-size: 1rem;
+  color: #334155;
+  box-shadow: 0 1px 4px 0 rgba(99,102,241,0.04);
+  transition: box-shadow 0.2s, background 0.2s;
+}
+.usersFilterInput:focus {
+  outline: none;
+  background: #e0e7ff;
+  box-shadow: 0 2px 8px 0 rgba(99,102,241,0.10);
+}
+.usersFilterSelect {
+  width: 100%;
+  padding: 0.7rem 1.2rem;
+  border: none;
+  background: #f1f5ff;
+  border-radius: 0.8rem;
+  font-size: 1rem;
+  color: #334155;
+  box-shadow: 0 1px 4px 0 rgba(99,102,241,0.04);
+  transition: box-shadow 0.2s, background 0.2s;
+}
+.usersFilterSelect:focus {
+  outline: none;
+  background: #e0e7ff;
+  box-shadow: 0 2px 8px 0 rgba(99,102,241,0.10);
+}
+.usersStatCard {
+  box-shadow: 0 2px 12px 0 rgba(99,102,241,0.06);
+  border: none;
+  background: #f1f5ff;
+  padding: 1.5rem 1.2rem;
+  border-radius: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+.usersStatIcon {
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.8rem;
+  background: #e0e7ff;
+  color: #6366f1;
+  font-size: 1.5rem;
+}
+.usersStatInfo {
+  flex: 1;
+}
+.usersStatLabel {
+  color: #64748b;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+.usersStatValue {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+.usersPageBg {
+  background: linear-gradient(135deg, #f8fafc 60%, #e0e7ff 100%);
+  min-height: 100vh;
+}
+
+.usersPageContainer {
+  max-width: 90vw;
+  margin: 0 auto;
+  padding: 48px 0 32px 0;
+  animation: fadeIn 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+
+.usersMainCard {
+  background: #fff;
+  border-radius: 2rem;
+  box-shadow: 0 8px 32px 0 rgba(99,102,241,0.10);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.usersStatsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.usersStatCard {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  background: #f1f5ff;
+  border-radius: 1.2rem;
+  padding: 1.5rem 1.2rem;
+  box-shadow: 0 2px 12px 0 rgba(99,102,241,0.06);
+}
+
+.usersStatIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.8rem;
+  background: #e0e7ff;
+  color: #6366f1;
+  font-size: 1.5rem;
+}
+
+.usersStatInfo {
+  flex: 1;
+}
+
+.usersStatLabel {
+  color: #64748b;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.usersStatValue {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.usersFilterBar {
+  background: #f8fafc;
+  border-radius: 1.2rem;
+  box-shadow: 0 2px 8px 0 rgba(99,102,241,0.04);
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+.usersFilterRight {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  margin-left: auto;
+  align-items: center;
+}
+
+.usersTableCard {
+  background: #fff;
+  border-radius: 1.2rem;
+  box-shadow: 0 2px 12px 0 rgba(99,102,241,0.06);
+  overflow: hidden;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: none; }
+}

@@ -42,18 +42,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(null);
   }, []);
 
+  const normalizeRole = (role: string) => {
+    if (!role) return 'Employee';
+    switch (role.toLowerCase()) {
+      case 'admin': return 'Admin';
+      case 'manager': return 'Manager';
+      case 'employee': return 'Employee';
+      default: return 'Employee';
+    }
+  };
+
   const refreshUser = useCallback(async () => {
     try {
       if (localStorage.getItem('authMode') === 'demo') {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
           const parsedUser: User = JSON.parse(storedUser);
+          parsedUser.role = normalizeRole(parsedUser.role as string) as any;
           setUser(parsedUser);
         }
         return;
       }
 
       const updatedUser = await apiService.getProfile();
+      updatedUser.role = normalizeRole(updatedUser.role as string) as any;
       setUser(updatedUser);
       localStorage.setItem('user', JSON.stringify(updatedUser));
     } catch (error) {
@@ -93,7 +105,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setIsLoading(true);
       const response = await apiService.login(credentials);
-      
+      response.user.role = normalizeRole(response.user.role as string) as any;
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
       localStorage.removeItem('authMode');
@@ -104,7 +116,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (role === 'Admin') {
         navigate('/admin/overview', { replace: true });
       } else if (role === 'Manager') {
-        navigate('/manager/dashboard', { replace: true }); // Manager için kendi dashboard
+        navigate('/manager/dashboard', { replace: true });
       } else {
         navigate('/employee/dashboard', { replace: true });
       }

@@ -464,7 +464,7 @@ public class RulesEngineService : IRulesEngineService
             var rule = await _context.Rules.FindAsync(new object[] { ruleId }, cancellationToken: cancellationToken);
             if (rule != null)
             {
-                rule.AppliedCount++;
+                //rule.AppliedCount++;
                 rule.LastAppliedAt = DateTime.UtcNow;
             }
 

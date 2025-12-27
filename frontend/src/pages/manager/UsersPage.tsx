@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { PageContainer, PageHeader, GlassCard, PrimaryButton, SecondaryButton, TextInput, Select, Modal, Table } from '../../widgets';
 import { Edit2, Trash2, Plus, Search, RefreshCw, User, Shield, Users, UserCheck, Briefcase, Mail, Phone } from 'lucide-react';
 import api from '../../utils/services/api';
+import styles from './UsersPage.module.css';
 
 // Simple toast replacement
 const toast = {
@@ -333,10 +334,9 @@ const UsersPage: React.FC = () => {
   );
 
   return (
-    <PageContainer className="bg-[#f8fafc] min-h-screen pb-12">
-      <div className="max-w-6xl mx-auto py-10">
-        {/* Büyük beyaz kart */}
-        <div className="bg-white rounded-2xl shadow-xl p-10 space-y-8">
+    <PageContainer className={styles.usersPageBg}>
+      <div className={styles.usersPageContainer}>
+        <div className={styles.usersMainCard}>
           <PageHeader
             title="Kullanıcı Yönetimi"
             description="Ekip üyelerini yetkilendirin ve erişim izinlerini kontrol edin."
@@ -349,51 +349,66 @@ const UsersPage: React.FC = () => {
           />
 
           {/* Statlar */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="flex items-center gap-4 p-6 rounded-xl bg-indigo-50">
-              <Users className="w-8 h-8 text-indigo-600" />
-              <div>
-                <p className="text-sm text-gray-500">Toplam Kullanıcı</p>
-                <p className="text-2xl font-bold text-indigo-900">{stats.total}</p>
+          <div className={styles.usersStatsGrid}>
+            <div className={styles.usersStatCard}>
+              <div className={styles.usersStatIcon}><Users className="w-7 h-7" /></div>
+              <div className={styles.usersStatInfo}>
+                <div className={styles.usersStatLabel}>Toplam Kullanıcı</div>
+                <div className={styles.usersStatValue}>{stats.total}</div>
               </div>
             </div>
-            <div className="flex items-center gap-4 p-6 rounded-xl bg-emerald-50">
-              <UserCheck className="w-8 h-8 text-emerald-600" />
-              <div>
-                <p className="text-sm text-gray-500">Aktif Kullanıcı</p>
-                <p className="text-2xl font-bold text-emerald-900">{stats.active}</p>
+            <div className={styles.usersStatCard}>
+              <div className={styles.usersStatIcon} style={{background:'#bbf7d0', color:'#059669'}}><UserCheck className="w-7 h-7" /></div>
+              <div className={styles.usersStatInfo}>
+                <div className={styles.usersStatLabel}>Aktif Kullanıcı</div>
+                <div className={styles.usersStatValue}>{stats.active}</div>
               </div>
             </div>
-            <div className="flex items-center gap-4 p-6 rounded-xl bg-amber-50">
-              <Shield className="w-8 h-8 text-amber-600" />
-              <div>
-                <p className="text-sm text-gray-500">Admin Sayısı</p>
-                <p className="text-2xl font-bold text-amber-900">{stats.admins}</p>
+            <div className={styles.usersStatCard}>
+              <div className={styles.usersStatIcon} style={{background:'#fde68a', color:'#b45309'}}><Shield className="w-7 h-7" /></div>
+              <div className={styles.usersStatInfo}>
+                <div className={styles.usersStatLabel}>Admin Sayısı</div>
+                <div className={styles.usersStatValue}>{stats.admins}</div>
               </div>
             </div>
           </div>
 
           {/* Filtre Barı */}
-          <div className="bg-white p-4 rounded-xl shadow border border-slate-200 flex flex-wrap items-center gap-4">
-            <div className="flex-1 min-w-[300px] relative">
+          <div className={styles.usersFilterBar}>
+            <div style={{flex:'0 1 260px', minWidth:180, maxWidth:320, position:'relative'}}>
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="İsim, e-posta veya departman ile ara..."
-                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm"
+                className={styles.usersFilterInput}
               />
             </div>
-            <div className="w-44"><Select options={[{ value: '', label: 'Tüm Roller' }, ...roles]} value={roleFilter} onChange={setRoleFilter} /></div>
-            <div className="w-44"><Select options={[{ value: '', label: 'Tüm Durumlar' }, { value: 'active', label: 'Aktif' }, { value: 'inactive', label: 'Pasif' }]} value={statusFilter} onChange={setStatusFilter} /></div>
-            <SecondaryButton onClick={fetchUsers} disabled={loading} className="!p-2.5">
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            </SecondaryButton>
+            <div className={styles.usersFilterRight}>
+              <div style={{width:176}} className={styles.usersSelectWrapper}>
+                <select value={roleFilter} onChange={e => setRoleFilter(e.target.value)}>
+                  <option value="">Tüm Roller</option>
+                  {roles.map(r => (
+                    <option key={r.value} value={r.value}>{r.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div style={{width:176}} className={styles.usersSelectWrapper}>
+                <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+                  <option value="">Tüm Durumlar</option>
+                  <option value="active">Aktif</option>
+                  <option value="inactive">Pasif</option>
+                </select>
+              </div>
+              <SecondaryButton onClick={fetchUsers} disabled={loading} className="!p-2.5">
+                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              </SecondaryButton>
+            </div>
           </div>
 
           {/* Tablo */}
-          <div className="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
+          <div className={styles.usersTableCard}>
             {loading ? (
               <div className="p-20 flex flex-col items-center justify-center gap-4 text-slate-400">
                 <RefreshCw className="w-10 h-10 animate-spin text-blue-500" />

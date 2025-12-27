@@ -175,6 +175,8 @@ export interface QrToken {
 
 // Dashboard types
 export interface DashboardStats {
+  recentReservations: never[];
+  pendingApprovals: number;
   totalDesks: number;
   availableDesks: number;
   totalRooms: number;

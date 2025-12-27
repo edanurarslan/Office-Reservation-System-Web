@@ -38,8 +38,8 @@ public class AuthController : ControllerBase
             return Unauthorized(new { Error = "Invalid credentials" });
         }
 
-        // Basit hash kontrolü (gerçek sistemde hash karşılaştırması yapılmalı)
-        if (user.PasswordHash != request.Password)
+        // BCrypt hash kontrolü
+        if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
             // Log failed login attempt (wrong password)
             await _auditLogService.LogLoginAsync(user.Id, false, "Yanlış şifre");
@@ -51,6 +51,14 @@ public class AuthController : ControllerBase
 
         var token = _jwtTokenService.GenerateAccessToken(user);
         var refreshToken = _jwtTokenService.GenerateRefreshToken();
+
+        string roleString = user.Role switch
+        {
+            UserRole.Employee => "employee",
+            UserRole.Manager => "manager",
+            UserRole.Admin => "admin",
+            _ => "employee"
+        };
 
         return Ok(new
         {
@@ -64,7 +72,7 @@ public class AuthController : ControllerBase
                 user.Email,
                 user.FirstName,
                 user.LastName,
-                user.Role,
+                Role = roleString,
                 user.Department,
                 user.JobTitle
             }
