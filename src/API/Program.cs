@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfisYonetimSistemi.Infrastructure.Data;
@@ -68,10 +67,17 @@ builder.Services.AddSwaggerGen(c =>
 // CORS policy for React app
 builder.Services.AddCors(options =>
 {
-
     options.AddPolicy("AllowReactApp", policy =>
     {
         policy.WithOrigins("http://localhost:5173", "http://localhost:5174")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+    // CORS policy for Flutter web
+    options.AddPolicy("AllowFlutterWeb", policy =>
+    {
+        policy.WithOrigins("http://localhost:8080")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -84,6 +90,18 @@ builder.Services.AddHttpContextAccessor();
 // Add AuditLog Service
 builder.Services.AddScoped<OfisYonetimSistemi.Infrastructure.Services.IAuditLogService, OfisYonetimSistemi.Infrastructure.Services.AuditLogService>();
 
+// TEMP: Allow all origins for debugging CORS issues
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+
 var app = builder.Build();
 
 // Enable Swagger middleware
@@ -93,7 +111,8 @@ app.UseSwaggerUI();
 // Add middleware pipeline
 app.UseExceptionHandling();
 app.UseRouting();
-app.UseCors("AllowReactApp");
+// TEMP: Use AllowAll CORS policy for debugging
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
