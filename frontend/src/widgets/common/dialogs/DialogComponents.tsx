@@ -48,7 +48,7 @@ export const Modal: React.FC<ModalProps> = ({
     >
       <div
         className={`${getSizeClasses()} bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto`}
-        style={{ zIndex: 10000, boxShadow: '0 8px 40px rgba(30,41,59,0.18)', background: '#fff' }}
+        style={{ zIndex: 10000, boxShadow: '0 8px 40px rgba(30,41,59,0.18)', background: '#fff', borderRadius: '2rem' }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

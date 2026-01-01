@@ -341,7 +341,7 @@ const UsersPage: React.FC = () => {
             title="Kullanıcı Yönetimi"
             description="Ekip üyelerini yetkilendirin ve erişim izinlerini kontrol edin."
             action={
-              <PrimaryButton onClick={() => { resetForm(); setIsCreateModalOpen(true); }} className="shadow-lg shadow-blue-200">
+              <PrimaryButton onClick={() => { resetForm(); setIsCreateModalOpen(true); }} className="shadow-lg shadow-blue-200" style={{ width: '97%', padding: '0.6rem 0.75rem', borderRadius: '0.6rem', border: '1.5px solid #e5e7eb', fontSize: '0.85rem', fontFamily: 'inherit', background: '#fff', color: '#312e81', fontWeight: 600 }}>
                 <Plus className="w-4 h-4 mr-2" />
                 Yeni Kullanıcı
               </PrimaryButton>
@@ -401,7 +401,7 @@ const UsersPage: React.FC = () => {
                   <option value="inactive">Pasif</option>
                 </select>
               </div>
-              <SecondaryButton onClick={fetchUsers} disabled={loading} className="!p-2.5">
+              <SecondaryButton onClick={fetchUsers} disabled={loading} className="!p-2.5" style={{ width: '10%', padding: '0.6rem 0.75rem', borderRadius: '0.6rem', border: '1.5px solid #e5e7eb', fontSize: '0.85rem', fontFamily: 'inherit', background: '#fff', color: '#312e81'}}>
                 <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
               </SecondaryButton>
             </div>

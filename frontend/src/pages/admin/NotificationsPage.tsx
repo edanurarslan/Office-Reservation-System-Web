@@ -183,16 +183,16 @@ const NotificationsPage: React.FC = () => {
 
       <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
         {/* Send Notification Form */}
-        <div style={{ flex: 1, minWidth: 400, background: '#fff', borderRadius: '1.5rem', padding: '2rem', boxShadow: '0 8px 32px rgba(31,38,135,0.10)' }}>
-          <h3 style={{ margin: '0 0 1.5rem', color: '#312e81', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Send style={{ width: 20, height: 20 }} />
+        <div style={{ flex: 1, minWidth: 320, background: '#fff', borderRadius: '1.5rem', padding: '1.5rem', boxShadow: '0 8px 32px rgba(31,38,135,0.10)' }}>
+          <h3 style={{ margin: '0 0 1.5rem', color: '#312e81', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1rem' }}>
+            <Send style={{ width: 18, height: 18 }} />
             Yeni Bildirim Gönder
           </h3>
 
-          <form onSubmit={handleSend} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            {/* Title */}
+          <form onSubmit={handleSend} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {/* Title Field */}
             <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#374151', fontSize: '0.9rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#374151', fontSize: '0.85rem' }}>
                 Başlık (Opsiyonel)
               </label>
               <input
@@ -200,30 +200,30 @@ const NotificationsPage: React.FC = () => {
                 value={title}
                 onChange={e => setTitle(e.target.value)}
                 placeholder="Bildirim başlığı"
-                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '0.75rem', border: '2px solid #e5e7eb', fontSize: '0.95rem' }}
+                style={{ width: '97%', padding: '0.6rem 0.75rem', borderRadius: '0.6rem', border: '1.5px solid #e5e7eb', fontSize: '0.85rem', fontFamily: 'inherit' }}
               />
             </div>
 
-            {/* Message */}
+            {/* Message Field */}
             <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#374151', fontSize: '0.9rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#374151', fontSize: '0.85rem' }}>
                 Mesaj *
               </label>
               <textarea
                 value={message}
                 onChange={e => setMessage(e.target.value)}
-                placeholder="Bildirim veya duyuru metni"
+                placeholder="Bildirim veya duyuru metni yazın..."
                 required
-                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '0.75rem', border: '2px solid #e5e7eb', minHeight: 100, fontSize: '0.95rem', resize: 'vertical' }}
+                style={{ width: '97%', padding: '0.6rem 0.75rem', borderRadius: '0.6rem', border: '1.5px solid #e5e7eb', fontSize: '0.85rem', minHeight: '80px', resize: 'vertical', fontFamily: 'inherit' }}
               />
             </div>
 
             {/* Type */}
             <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#374151', fontSize: '0.9rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#374151', fontSize: '0.85rem' }}>
                 Bildirim Türü
               </label>
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
                 {typeOptions.map(type => (
                   <button
                     key={type.value}
@@ -232,18 +232,18 @@ const NotificationsPage: React.FC = () => {
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '0.5rem',
-                      padding: '0.5rem 1rem',
+                      gap: '0.4rem',
+                      padding: '0.4rem 0.8rem',
                       borderRadius: '0.5rem',
-                      border: notificationType === type.value ? `2px solid ${type.color}` : '2px solid #e5e7eb',
+                      border: notificationType === type.value ? `1.5px solid ${type.color}` : '1.5px solid #e5e7eb',
                       background: notificationType === type.value ? `${type.color}15` : '#fff',
                       cursor: 'pointer',
-                      fontSize: '0.85rem',
+                      fontSize: '0.8rem',
                       fontWeight: 600,
                       color: notificationType === type.value ? type.color : '#6b7280'
                     }}
                   >
-                    <type.icon style={{ width: 16, height: 16 }} />
+                    <type.icon style={{ width: 14, height: 14 }} />
                     {type.label}
                   </button>
                 ))}
@@ -252,21 +252,22 @@ const NotificationsPage: React.FC = () => {
 
             {/* Selection Mode */}
             <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#374151', fontSize: '0.9rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#374151', fontSize: '0.85rem' }}>
                 Alıcı Seçimi
               </label>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', gap: '0.4rem' }}>
                 <button
                   type="button"
                   onClick={() => { setSelectionMode('roles'); setSelectedUsers([]); }}
                   style={{
                     flex: 1,
-                    padding: '0.75rem',
+                    padding: '0.6rem',
                     borderRadius: '0.5rem',
-                    border: selectionMode === 'roles' ? '2px solid #6366f1' : '2px solid #e5e7eb',
+                    border: selectionMode === 'roles' ? '1.5px solid #6366f1' : '1.5px solid #e5e7eb',
                     background: selectionMode === 'roles' ? '#eef2ff' : '#fff',
                     cursor: 'pointer',
                     fontWeight: 600,
+                    fontSize: '0.8rem',
                     color: selectionMode === 'roles' ? '#6366f1' : '#6b7280'
                   }}
                 >
@@ -277,12 +278,13 @@ const NotificationsPage: React.FC = () => {
                   onClick={() => { setSelectionMode('users'); setSelectedRoles([]); }}
                   style={{
                     flex: 1,
-                    padding: '0.75rem',
+                    padding: '0.6rem',
                     borderRadius: '0.5rem',
-                    border: selectionMode === 'users' ? '2px solid #6366f1' : '2px solid #e5e7eb',
+                    border: selectionMode === 'users' ? '1.5px solid #6366f1' : '1.5px solid #e5e7eb',
                     background: selectionMode === 'users' ? '#eef2ff' : '#fff',
                     cursor: 'pointer',
                     fontWeight: 600,
+                    fontSize: '0.8rem',
                     color: selectionMode === 'users' ? '#6366f1' : '#6b7280'
                   }}
                 >
@@ -365,7 +367,7 @@ const NotificationsPage: React.FC = () => {
               </div>
             )}
 
-            <PrimaryButton type="submit" size="large" disabled={sending} style={{ marginTop: '0.5rem' }}>
+            <PrimaryButton type="submit" size="large" disabled={sending} style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }}>
               {sending ? (
                 <>
                   <RefreshCw style={{ width: 18, height: 18, marginRight: '0.5rem', animation: 'spin 1s linear infinite' }} />

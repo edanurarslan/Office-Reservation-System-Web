@@ -348,7 +348,7 @@
   margin-left: 12px;
 }
 .dashboardBg {
-  background: linear-gradient(135deg, #f0f2f5 60%, #e0e7ff 100%);
+  background: transparent;
 }
 
 .dashboardContainer {

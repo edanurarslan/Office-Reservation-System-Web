@@ -137,9 +137,9 @@ const LocationsPage: React.FC = () => {
       />
 
       <div style={{ marginBottom: '2rem' }}>
-        <PrimaryButton onClick={() => handleOpenModal()} size="medium">
-          <Plus style={{ width: '18px', height: '18px', marginRight: '0.5rem' }} />
-          Yeni Lokasyon
+        <PrimaryButton onClick={() => handleOpenModal()} style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }}>
+          <Plus style={{ width: '16px', height: '16px' }} />
+          Yeni Konum
         </PrimaryButton>
       </div>
 

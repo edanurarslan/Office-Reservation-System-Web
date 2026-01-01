@@ -32,20 +32,22 @@ const EmployeeDashboardPage: React.FC = () => {
   return (
     <PageContainer className={styles.dashboardBg + ' min-h-screen font-sans antialiased text-slate-900 px-6 py-10 max-w-7xl mx-auto'}>
       {/* HEADER: Karşılama */}
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-200 pb-8">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 mb-8">
         <div>
           <h1 className="text-4xl font-black tracking-tight text-slate-900">
             Merhaba, <span className="text-indigo-600">{user?.firstName || 'Employee'}</span> 👋
           </h1>
           <p className="text-slate-500 text-lg mt-2 font-medium">İşte bugün senin için ofisteki gelişmeler.</p>
         </div>
-        <div className="flex items-center gap-4">
-          <button className="relative p-3 bg-white rounded-2xl text-slate-400 hover:text-indigo-600 shadow-sm border border-slate-100 transition-all hover:shadow-md">
+        <div className="flex items-center gap-10 justify-end">
+          <button className="relative p-3 bg-white rounded-2xl text-slate-400 hover:text-indigo-600 shadow-sm border border-slate-100 transition-all hover:shadow-md"
+          style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }}>
             <Bell className="w-6 h-6" />
             <span className="absolute top-3 right-3 w-3 h-3 bg-rose-500 border-2 border-white rounded-full"></span>
           </button>
           <PrimaryButton 
-            onClick={() => window.location.href='/employee/reservations'} 
+            onClick={() => window.location.href='/employee/reservations'}
+            style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600, marginLeft: '2rem' }} 
             className="!rounded-2xl !py-4 !px-8 !bg-indigo-600 shadow-lg shadow-indigo-200 hover:!bg-indigo-700 transition-all flex items-center gap-3"
           >
             <Plus className="w-5 h-5" /> 
@@ -55,7 +57,7 @@ const EmployeeDashboardPage: React.FC = () => {
       </header>
 
       {/* STAT ve MEAL KARTLARI */}
-      <div className={styles.statGrid}>
+      <div className={styles.statGrid} style={{ marginTop: '2rem' }}>
         <div className={styles.statCard}>
           <div className={styles.statIcon}><Calendar size={28} /></div>
           <div className={styles.statInfo}>

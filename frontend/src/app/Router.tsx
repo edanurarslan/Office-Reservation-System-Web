@@ -30,6 +30,7 @@ import {
 } from '../pages/admin';
 // Common widgets
 import { Layout, LoadingSpinner } from '../widgets';
+import EmployeeReservationsPage from '../pages/employee/ReservationsPage';
 
 const ProtectedLayout: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -92,7 +93,7 @@ const AppRoutes: React.FC = () => {
   <Route element={<ProtectedLayout />}> 
   {/* Employee Routes */}
   <Route path="/employee/dashboard" element={<EmployeeDashboardPage />} />
-    <Route path="/employee/reservations" element={<ReservationsPage />} />
+    <Route path="/employee/reservations" element={<EmployeeReservationsPage />} />
     <Route path="/employee/locations" element={<LocationsPage />} />
     <Route path="/employee/notifications" element={<NotificationsPage />} />
     <Route path="/employee/settings" element={<SettingsPage />} />

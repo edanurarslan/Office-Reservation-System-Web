@@ -16,8 +16,8 @@ import {
 const LoginPage: React.FC = () => {
   const { login, isLoading } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('admin@ofis.com');
-  const [password, setPassword] = useState('Admin123!');
+  const [email, setEmail] = useState('admin@example.com');
+  const [password, setPassword] = useState('eda12');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);

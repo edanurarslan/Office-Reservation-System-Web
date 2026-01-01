@@ -30,14 +30,14 @@ const ReportsPage: React.FC = () => {
         description="Sistem kullanım istatistikleri ve raporları görüntüleyin."
       />
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
         <div>
           <label style={{ fontSize: '0.9rem', fontWeight: 600, color: '#312e81', display: 'block', marginBottom: '0.5rem' }}>Başlangıç Tarihi</label>
           <input
             type="date"
             value={dateRange.start}
             onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
-            style={{ width: '100%', padding: '0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', fontSize: '0.9rem' }}
+            style={{ width: '100%', padding: '0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', fontSize: '0.9rem', boxSizing: 'border-box' }}
           />
         </div>
         <div>
@@ -46,7 +46,7 @@ const ReportsPage: React.FC = () => {
             type="date"
             value={dateRange.end}
             onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
-            style={{ width: '100%', padding: '0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', fontSize: '0.9rem' }}
+            style={{ width: '100%', padding: '0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', fontSize: '0.9rem', boxSizing: 'border-box' }}
           />
         </div>
       </div>
@@ -99,13 +99,13 @@ const ReportsPage: React.FC = () => {
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: '1rem' }}>
-        <PrimaryButton onClick={() => handleDownload('pdf')} size="medium">
-          <Download style={{ width: '18px', height: '18px', marginRight: '0.5rem' }} />
+      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+        <PrimaryButton onClick={() => handleDownload('pdf')} style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }}>
+          <Download style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }} />
           PDF Olarak İndir
         </PrimaryButton>
-        <PrimaryButton onClick={() => handleDownload('csv')} size="medium" style={{ background: '#10b981', borderColor: '#10b981' }}>
-          <Download style={{ width: '18px', height: '18px', marginRight: '0.5rem' }} />
+        <PrimaryButton onClick={() => handleDownload('csv')} size="medium" style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: '#10b981', borderColor: '#10b981', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }}>
+          <Download style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }} />
           CSV Olarak İndir
         </PrimaryButton>
       </div>

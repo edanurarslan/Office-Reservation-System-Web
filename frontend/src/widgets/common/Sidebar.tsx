@@ -204,6 +204,7 @@ const Sidebar: React.FC = () => {
 
       <button
         onClick={logout}
+        style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }}
         className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition rounded-lg border-t border-indigo-100 text-sm font-medium"
       >
         <LogOut className="w-4 h-4" />

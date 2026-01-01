@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageContainer } from '../../widgets';
 import { 
   Users, MapPin, Calendar, TrendingUp, Activity, Clock, 
@@ -17,6 +18,7 @@ interface DashboardStats {
 }
 
 const OverviewPage: React.FC = () => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats>({
     totalUsers: 0,
     activeUsers: 0,
@@ -83,12 +85,12 @@ const OverviewPage: React.FC = () => {
   }, []);
 
   const statCards = [
-    { title: 'Toplam Kullanıcı', value: stats.totalUsers, icon: Users, color: '#3B82F6', bgColor: '#EFF6FF' },
-    { title: 'Aktif Kullanıcı', value: stats.activeUsers, icon: CheckCircle, color: '#10B981', bgColor: '#ECFDF5' },
-    { title: 'Toplam Konum', value: stats.totalLocations, icon: MapPin, color: '#8B5CF6', bgColor: '#F5F3FF' },
-    { title: 'Bugünkü Rezervasyon', value: stats.todayReservations, icon: Calendar, color: '#F59E0B', bgColor: '#FFFBEB' },
-    { title: 'Toplam Rezervasyon', value: stats.totalReservations, icon: BarChart3, color: '#EC4899', bgColor: '#FDF2F8' },
-    { title: 'Bekleyen Onay', value: stats.pendingApprovals, icon: AlertCircle, color: '#EF4444', bgColor: '#FEF2F2' },
+    { title: 'Toplam Kullanıcı', value: stats.totalUsers, icon: Users, color: '#3B82F6', bgColor: '#EFF6FF', action: '/admin/users' },
+    { title: 'Aktif Kullanıcı', value: stats.activeUsers, icon: CheckCircle, color: '#10B981', bgColor: '#ECFDF5', action: '/admin/users' },
+    { title: 'Toplam Konum', value: stats.totalLocations, icon: MapPin, color: '#8B5CF6', bgColor: '#F5F3FF', action: '/admin/locations' },
+    { title: 'Bugünkü Rezervasyon', value: stats.todayReservations, icon: Calendar, color: '#F59E0B', bgColor: '#FFFBEB', action: '/admin/approval' },
+    { title: 'Toplam Rezervasyon', value: stats.totalReservations, icon: BarChart3, color: '#EC4899', bgColor: '#FDF2F8', action: '/admin/approval' },
+    { title: 'Bekleyen Onay', value: stats.pendingApprovals, icon: AlertCircle, color: '#EF4444', bgColor: '#FEF2F2', action: '/admin/approval' },
   ];
 
   const quickActions = [
@@ -110,7 +112,7 @@ const OverviewPage: React.FC = () => {
 
   const containerStyle: React.CSSProperties = {
     backgroundColor: '#FFFFFF',
-    borderRadius: '20px',
+    borderRadius: '50px',
     padding: '32px',
     boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
     minHeight: 'calc(100vh - 140px)',
@@ -135,7 +137,7 @@ const OverviewPage: React.FC = () => {
     <PageContainer>
       <div style={containerStyle}>
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', flexWrap: 'wrap', gap: '16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <h1 style={{ fontSize: '28px', fontWeight: '700', color: '#1F2937', margin: 0 }}>
               Hoş Geldiniz, Admin 👋
@@ -165,11 +167,12 @@ const OverviewPage: React.FC = () => {
           display: 'grid', 
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
           gap: '20px', 
-          marginBottom: '32px' 
+          marginBottom: '20px' 
         }}>
           {statCards.map((card, index) => (
             <div
               key={index}
+              onClick={() => navigate(card.action)}
               style={{
                 ...cardStyle,
                 display: 'flex',
@@ -227,9 +230,9 @@ const OverviewPage: React.FC = () => {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
               {quickActions.map((action, index) => (
-                <a
+                <button
                   key={index}
-                  href={action.href}
+                  onClick={() => navigate(action.href)}
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -241,6 +244,7 @@ const OverviewPage: React.FC = () => {
                     border: '2px solid transparent',
                     textDecoration: 'none',
                     transition: 'all 0.2s',
+                    cursor: 'pointer',
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = '#EEF2FF';
@@ -266,7 +270,7 @@ const OverviewPage: React.FC = () => {
                   <span style={{ fontSize: '13px', fontWeight: '500', color: '#374151', textAlign: 'center' }}>
                     {action.title}
                   </span>
-                </a>
+                </button>
               ))}
             </div>
           </div>

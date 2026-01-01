@@ -121,16 +121,16 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    if (!db.Users.Any(u => u.Email == "admin@ofis.com"))
+    if (!db.Users.Any(u => u.Email == "admin@example.com"))
     {
         db.Users.Add(new User
         {
-            Email = "admin@ofis.com",
+            Email = "admin@example.com",
             FirstName = "Admin",
             LastName = "User",
             Role = UserRole.Admin,
             IsActive = true,
-            PasswordHash = "Admin123!" // NOT SECURE: Replace with hash in production
+            PasswordHash = "eda12" // NOT SECURE: Replace with hash in production
         });
         db.SaveChanges();
     }

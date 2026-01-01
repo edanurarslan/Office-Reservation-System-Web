@@ -34,16 +34,15 @@ const ManagerDashboardPage: React.FC = () => {
         title="Yönetici Paneli"
         description="Rezervasyonlar, raporlar ve onay bekleyen işlemler."
         action={
-          <PrimaryButton 
-            onClick={() => {}} 
-            style={{ 
-              boxShadow: '0 4px 12px rgba(49, 46, 129, 0.2)',
-              borderRadius: '0.75rem'
-            }}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Yeni Rezervasyon
-          </PrimaryButton>
+          <div style={{ marginTop: '1.5rem', marginRight: '1.5rem' }}>
+            <PrimaryButton 
+              onClick={() => {}} 
+              style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Yeni Rezervasyon
+            </PrimaryButton>
+          </div>
         }
       />
 
@@ -92,7 +91,7 @@ const ManagerDashboardPage: React.FC = () => {
         }}>
           
           {/* İstatistikler */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2.5rem', marginBottom: '2.5rem' }}>
             <div style={{ 
               padding: '1.5rem', 
               borderRadius: '1.25rem', 

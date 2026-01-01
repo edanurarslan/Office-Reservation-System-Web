@@ -249,7 +249,162 @@ const LogsPage: React.FC = () => {
       <PageHeader
         title="Sistem Günlükleri"
         description="Sistem aktivitesini ve işlemlerini izleyin."
-        action={
+      />
+
+      {stats && (
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+          gap: '1rem', 
+          marginBottom: '2rem' 
+        }}>
+          <div style={{ background: '#fff', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 4px 16px rgba(31,38,135,0.08)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <BarChart3 style={{ width: '24px', height: '24px', color: '#6366f1' }} />
+              <span style={{ color: '#6b7280', fontSize: '0.9rem' }}>Toplam Log</span>
+            </div>
+            <div style={{ fontSize: '2rem', fontWeight: 700, color: '#312e81' }}>{stats.totalLogs.toLocaleString()}</div>
+          </div>
+          <div style={{ background: '#fff', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 4px 16px rgba(31,38,135,0.08)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <Calendar style={{ width: '24px', height: '24px', color: '#10b981' }} />
+              <span style={{ color: '#2d323dff', fontSize: '0.9rem' }}>Bugün</span>
+            </div>
+            <div style={{ fontSize: '2rem', fontWeight: 700, color: '#166534' }}>{stats.todayLogs.toLocaleString()}</div>
+          </div>
+          <div style={{ background: '#fff', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 4px 16px rgba(31,38,135,0.08)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <Calendar style={{ width: '24px', height: '24px', color: '#3b82f6' }} />
+              <span style={{ color: '#6b7280', fontSize: '0.9rem' }}>Bu Hafta</span>
+            </div>
+            <div style={{ fontSize: '2rem', fontWeight: 700, color: '#0c4a6e' }}>{stats.weekLogs.toLocaleString()}</div>
+          </div>
+          <div style={{ background: '#fff', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 4px 16px rgba(31,38,135,0.08)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <FileText style={{ width: '24px', height: '24px', color: '#ef4444' }} />
+              <span style={{ color: '#6b7280', fontSize: '0.9rem' }}>Hatalar</span>
+            </div>
+            <div style={{ fontSize: '2rem', fontWeight: 700, color: '#991b1b' }}>{stats.errorLogs.toLocaleString()}</div>
+          </div>
+        </div>
+      )}
+
+      <div style={{ background: '#fff', borderRadius: '1.5rem', padding: '2rem', boxShadow: '0 8px 32px rgba(31,38,135,0.10)', marginBottom: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+          <div style={{ flex: '1' }}>
+            <label style={{ display: 'block', fontWeight: 600, color: '#312e81', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+              Ara
+            </label>
+            <div style={{ position: 'relative' }}>
+              <input
+                type="text"
+                placeholder="Kullanıcı, kaynak veya ayrıntı ara..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem 0.75rem 2.5rem',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '0.75rem',
+                  fontSize: '0.95rem',
+                  color: '#312e81',
+                  fontWeight: 500,
+                  boxSizing: 'border-box'
+                }}
+              />
+              <Filter style={{ 
+                position: 'absolute', 
+                left: '0.75rem', 
+                top: '50%', 
+                transform: 'translateY(-50%)',
+                width: '18px', 
+                height: '18px', 
+                color: '#9ca3af',
+                zIndex: 10
+              }} />
+            </div>
+          </div>
+          <div style={{ flex: '1' }}>
+            <label style={{ display: 'block', fontWeight: 600, color: '#312e81', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+              İşlem
+            </label>
+            <select
+              value={actionFilter}
+              onChange={(e) => { setActionFilter(e.target.value); setPage(1); }}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #e5e7eb',
+                borderRadius: '0.75rem',
+                fontSize: '0.95rem',
+                color: '#312e81',
+                fontWeight: 500,
+                cursor: 'pointer',
+                boxSizing: 'border-box'
+              }}
+            >
+              <option value="all">Tümü</option>
+              {actions.map(action => (
+                <option key={action} value={action}>{getActionLabel(action)}</option>
+              ))}
+            </select>
+          </div>
+          <div style={{ flex: '1' }}>
+            <label style={{ display: 'block', fontWeight: 600, color: '#312e81', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+              Kaynak Tipi
+            </label>
+            <select
+              value={entityTypeFilter}
+              onChange={(e) => { setEntityTypeFilter(e.target.value); setPage(1); }}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #e5e7eb',
+                borderRadius: '0.75rem',
+                fontSize: '0.95rem',
+                color: '#312e81',
+                fontWeight: 500,
+                cursor: 'pointer',
+                boxSizing: 'border-box'
+              }}
+            >
+              <option value="all">Tümü</option>
+              {entityTypes.map(type => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+          </div>
+          <div style={{ flex: '1' }}>
+            <label style={{ display: 'block', fontWeight: 600, color: '#312e81', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+              Durum
+            </label>
+            <select
+              value={statusFilter}
+              onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #e5e7eb',
+                borderRadius: '0.75rem',
+                fontSize: '0.95rem',
+                color: '#312e81',
+                fontWeight: 500,
+                cursor: 'pointer',
+                boxSizing: 'border-box'
+              }}
+            >
+              <option value="all">Tümü</option>
+              <option value="success">Başarılı</option>
+              <option value="error">Hata</option>
+            </select>
+          </div>
+        </div>
+
+        <div style={{ fontSize: '0.9rem', color: '#6b7280', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Filter style={{ width: '16px', height: '16px' }} />
+            {totalCount} kayıt bulundu
+          </div>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             <button
               onClick={fetchLogs}
@@ -288,131 +443,6 @@ const LogsPage: React.FC = () => {
               Eski Logları Temizle
             </button>
           </div>
-        }
-      />
-
-      {stats && (
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-          gap: '1rem', 
-          marginBottom: '2rem' 
-        }}>
-          <div style={{ background: '#fff', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 4px 16px rgba(31,38,135,0.08)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-              <BarChart3 style={{ width: '24px', height: '24px', color: '#6366f1' }} />
-              <span style={{ color: '#6b7280', fontSize: '0.9rem' }}>Toplam Log</span>
-            </div>
-            <div style={{ fontSize: '2rem', fontWeight: 700, color: '#312e81' }}>{stats.totalLogs.toLocaleString()}</div>
-          </div>
-          <div style={{ background: '#fff', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 4px 16px rgba(31,38,135,0.08)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-              <Calendar style={{ width: '24px', height: '24px', color: '#10b981' }} />
-              <span style={{ color: '#6b7280', fontSize: '0.9rem' }}>Bugün</span>
-            </div>
-            <div style={{ fontSize: '2rem', fontWeight: 700, color: '#166534' }}>{stats.todayLogs.toLocaleString()}</div>
-          </div>
-          <div style={{ background: '#fff', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 4px 16px rgba(31,38,135,0.08)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-              <Calendar style={{ width: '24px', height: '24px', color: '#3b82f6' }} />
-              <span style={{ color: '#6b7280', fontSize: '0.9rem' }}>Bu Hafta</span>
-            </div>
-            <div style={{ fontSize: '2rem', fontWeight: 700, color: '#0c4a6e' }}>{stats.weekLogs.toLocaleString()}</div>
-          </div>
-          <div style={{ background: '#fff', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 4px 16px rgba(31,38,135,0.08)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-              <FileText style={{ width: '24px', height: '24px', color: '#ef4444' }} />
-              <span style={{ color: '#6b7280', fontSize: '0.9rem' }}>Hatalar</span>
-            </div>
-            <div style={{ fontSize: '2rem', fontWeight: 700, color: '#991b1b' }}>{stats.errorLogs.toLocaleString()}</div>
-          </div>
-        </div>
-      )}
-
-      <div style={{ background: '#fff', borderRadius: '1.5rem', padding: '2rem', boxShadow: '0 8px 32px rgba(31,38,135,0.10)', marginBottom: '2rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-          <TextInput
-            label="Ara"
-            placeholder="Kullanıcı, kaynak veya ayrıntı ara..."
-            value={searchTerm}
-            onChange={(val) => setSearchTerm(val)}
-          />
-          <div>
-            <label style={{ display: 'block', fontWeight: 600, color: '#312e81', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-              İşlem
-            </label>
-            <select
-              value={actionFilter}
-              onChange={(e) => { setActionFilter(e.target.value); setPage(1); }}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #e5e7eb',
-                borderRadius: '0.75rem',
-                fontSize: '0.95rem',
-                color: '#312e81',
-                fontWeight: 500,
-                cursor: 'pointer',
-              }}
-            >
-              <option value="all">Tümü</option>
-              {actions.map(action => (
-                <option key={action} value={action}>{getActionLabel(action)}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label style={{ display: 'block', fontWeight: 600, color: '#312e81', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-              Kaynak Tipi
-            </label>
-            <select
-              value={entityTypeFilter}
-              onChange={(e) => { setEntityTypeFilter(e.target.value); setPage(1); }}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #e5e7eb',
-                borderRadius: '0.75rem',
-                fontSize: '0.95rem',
-                color: '#312e81',
-                fontWeight: 500,
-                cursor: 'pointer',
-              }}
-            >
-              <option value="all">Tümü</option>
-              {entityTypes.map(type => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label style={{ display: 'block', fontWeight: 600, color: '#312e81', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-              Durum
-            </label>
-            <select
-              value={statusFilter}
-              onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #e5e7eb',
-                borderRadius: '0.75rem',
-                fontSize: '0.95rem',
-                color: '#312e81',
-                fontWeight: 500,
-                cursor: 'pointer',
-              }}
-            >
-              <option value="all">Tümü</option>
-              <option value="success">Başarılı</option>
-              <option value="error">Hata</option>
-            </select>
-          </div>
-        </div>
-
-        <div style={{ fontSize: '0.9rem', color: '#6b7280', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Filter style={{ width: '16px', height: '16px' }} />
-          {totalCount} kayıt bulundu
         </div>
       </div>
 

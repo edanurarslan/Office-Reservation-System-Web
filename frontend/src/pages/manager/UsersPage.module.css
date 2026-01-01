@@ -99,7 +99,7 @@
   color: #1e293b;
 }
 .usersPageBg {
-  background: linear-gradient(135deg, #f8fafc 60%, #e0e7ff 100%);
+  background: transparent;
   min-height: 100vh;
 }
 

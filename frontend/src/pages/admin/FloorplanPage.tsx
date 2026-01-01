@@ -323,14 +323,14 @@ const FloorPlanPage: React.FC = () => {
           </select>
         </div>
 
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.75rem' }}>
-          <PrimaryButton onClick={handleAddDesk} size="medium" disabled={!selectedZoneId}>
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <PrimaryButton onClick={handleAddDesk} disabled={!selectedZoneId} style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }}>
             <Plus style={{ width: 18, height: 18, marginRight: '0.5rem' }} />
             Masa Ekle
           </PrimaryButton>
           
           {hasChanges && (
-            <PrimaryButton onClick={handleSavePositions} size="medium" disabled={saving}>
+            <PrimaryButton onClick={handleSavePositions} disabled={saving} style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }}>
               <Save style={{ width: 18, height: 18, marginRight: '0.5rem' }} />
               {saving ? 'Kaydediliyor...' : 'Kaydet'}
             </PrimaryButton>

@@ -156,12 +156,12 @@ const SettingsPage: React.FC = () => {
       </div>
 
       {/* Action Buttons */}
-      <div style={{ display: 'flex', gap: '1rem' }}>
-        <PrimaryButton onClick={() => console.log('Ayarlar kaydedildi')} size="medium" style={{ flex: 1 }}>
-          <Settings style={{ width: '18px', height: '18px', marginRight: '0.5rem' }} />
+      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+        <PrimaryButton onClick={() => console.log('Ayarlar kaydedildi')} size="medium" style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }}>
+          <Settings style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }} />
           Değişiklikleri Kaydet
         </PrimaryButton>
-        <SecondaryButton onClick={() => console.log('İptal')} size="medium" style={{ flex: 1 }}>
+        <SecondaryButton onClick={() => console.log('İptal')} style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }}>
           İptal
         </SecondaryButton>
       </div>
