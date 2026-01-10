@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { PageContainer, PageHeader } from '../../widgets';
+import { User } from 'lucide-react';
 
 const ProfilePage: React.FC = () => {
   const { user } = useAuth();
@@ -45,12 +47,16 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="page-center">
-      <div style={{width:'100%',maxWidth:600}}>
-        <div className="page-glass">
-          <div className="page-title">Profil</div>
-          <div style={{color:'#6366f1',fontWeight:500,marginBottom:'1.2rem'}}>Hesap bilgilerinizi görüntüleyin ve düzenleyin</div>
-          <div style={{marginTop:'2rem',textAlign:'center'}}>
+    <PageContainer>
+      <PageHeader
+        title="Profil"
+        description="Hesap bilgilerinizi görüntüleyin ve düzenleyin."
+        icon={<User />}
+      />
+      
+      <div style={{ maxWidth: 600, margin: '0 auto' }}>
+        <div style={{ background: '#fff', borderRadius: '1.5rem', padding: '2rem', boxShadow: '0 8px 32px rgba(31,38,135,0.10)' }}>
+          <div style={{textAlign:'center'}}>
             <div style={{marginBottom:'1.2rem'}}>
               <label style={{fontWeight:500,color:'#818cf8'}}>Profil Fotoğrafı</label><br/>
               <div style={{margin:'0.7rem auto'}}>
@@ -118,7 +124,7 @@ const ProfilePage: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

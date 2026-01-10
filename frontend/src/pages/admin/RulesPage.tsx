@@ -162,6 +162,7 @@ const RulesPage: React.FC = () => {
       <PageHeader
         title="Kurallar"
         description="Sistem kurallarını yönetin."
+        icon={<Shield />}
       />
 
       <div style={{ marginBottom: '2rem' }}>

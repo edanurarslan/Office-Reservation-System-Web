@@ -1,4 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
+// AnimatedCard - Card with entrance animation
+interface AnimatedCardProps {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+  style?: React.CSSProperties;
+  onClick?: () => void;
+}
+
+export const AnimatedCard: React.FC<AnimatedCardProps> = ({
+  children,
+  delay = 0,
+  className = '',
+  style = {},
+  onClick,
+}) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), delay + 100);
+    return () => clearTimeout(timer);
+  }, [delay]);
+
+  return (
+    <div
+      onClick={onClick}
+      className={className}
+      style={{
+        ...style,
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
+        transition: 'opacity 0.4s ease-out, transform 0.4s ease-out, box-shadow 0.3s ease',
+        cursor: onClick ? 'pointer' : 'default',
+      }}
+    >
+      {children}
+    </div>
+  );
+};
 
 // GlassCard - Glassmorphism card component
 interface GlassCardProps {
@@ -102,7 +142,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   );
 };
 
-// PageContainer - Main page wrapper
+// PageContainer - Main page wrapper with slide-up animation
 interface PageContainerProps {
   children: React.ReactNode;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
@@ -121,18 +161,35 @@ export const PageContainer: React.FC<PageContainerProps> = ({
   children,
   maxWidth = 'lg',
   className = '',
-}) => (
-  <div className={`mx-auto ${maxWidthMap[maxWidth]} px-4 py-8 ${className}`}>
-    {children}
-  </div>
-);
+}) => {
+  const [isVisible, setIsVisible] = useState(false);
 
-// PageHeader - Page title and description
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div 
+      className={`mx-auto ${maxWidthMap[maxWidth]} px-4 py-8 ${className}`}
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
+        transition: 'opacity 0.5s ease-out, transform 0.5s ease-out',
+      }}
+    >
+      {children}
+    </div>
+  );
+};
+
+// PageHeader - Page title and description with modern gradient design
 interface PageHeaderProps {
   title: string;
   description?: string;
   action?: React.ReactNode;
   className?: string;
+  icon?: React.ReactNode;
 }
 
 export const PageHeader: React.FC<PageHeaderProps> = ({
@@ -140,13 +197,89 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   description,
   action,
   className = '',
+  icon,
 }) => (
-  <div className={`mb-8 flex items-start justify-between ${className}`}>
-    <div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">{title}</h1>
-      {description && <p className="text-gray-600 text-lg">{description}</p>}
+  <div 
+    className={className}
+    style={{ 
+      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)', 
+      borderRadius: '1.5rem', 
+      padding: '2rem 2.5rem', 
+      marginBottom: '2rem',
+      position: 'relative',
+      overflow: 'hidden',
+      boxShadow: '0 10px 40px rgba(99, 102, 241, 0.3)'
+    }}
+  >
+    {/* Dekoratif Daireler */}
+    <div style={{ 
+      position: 'absolute', 
+      top: '-50px', 
+      right: '-50px', 
+      width: '180px', 
+      height: '180px', 
+      background: 'rgba(255,255,255,0.1)', 
+      borderRadius: '50%' 
+    }} />
+    <div style={{ 
+      position: 'absolute', 
+      bottom: '-30px', 
+      left: '25%', 
+      width: '100px', 
+      height: '100px', 
+      background: 'rgba(255,255,255,0.08)', 
+      borderRadius: '50%' 
+    }} />
+    <div style={{ 
+      position: 'absolute', 
+      top: '15px', 
+      left: '55%', 
+      width: '50px', 
+      height: '50px', 
+      background: 'rgba(255,255,255,0.05)', 
+      borderRadius: '50%' 
+    }} />
+    
+    <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        {icon && (
+          <div style={{ 
+            background: 'rgba(255,255,255,0.2)', 
+            padding: '0.875rem', 
+            borderRadius: '1rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backdropFilter: 'blur(10px)'
+          }}>
+            {icon}
+          </div>
+        )}
+        <div>
+          <h1 style={{ 
+            fontSize: '2rem', 
+            fontWeight: 800, 
+            color: 'white', 
+            margin: 0,
+            letterSpacing: '-0.02em',
+            textShadow: '0 2px 10px rgba(0,0,0,0.1)'
+          }}>
+            {title}
+          </h1>
+          {description && (
+            <p style={{ 
+              color: 'rgba(255,255,255,0.85)', 
+              fontSize: '1rem', 
+              margin: '0.5rem 0 0 0',
+              fontWeight: 500
+            }}>
+              {description}
+            </p>
+          )}
+        </div>
+      </div>
+      {action && <div style={{ marginTop: '0.5rem' }}>{action}</div>}
     </div>
-    {action && <div>{action}</div>}
   </div>
 );
 

@@ -21,6 +21,7 @@ const SettingsPage: React.FC = () => {
       <PageHeader
         title="Ayarlar"
         description="Profil ve uygulama ayarlarınızı yönetin."
+        icon={<Settings />}
       />
 
       {/* Notification Settings */}

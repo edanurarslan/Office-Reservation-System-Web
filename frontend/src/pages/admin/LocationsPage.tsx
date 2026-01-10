@@ -133,7 +133,8 @@ const LocationsPage: React.FC = () => {
     <PageContainer>
       <PageHeader
         title="Lokasyonlar"
-        description="Tüm ofis lokasyonlarını yönetin."
+        description="Tüm ofis lokasyonlarını yönetin"
+        icon={<MapPin style={{ width: '28px', height: '28px', color: 'white' }} />}
       />
 
       <div style={{ marginBottom: '2rem' }}>

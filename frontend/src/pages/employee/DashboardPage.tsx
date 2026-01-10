@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { PageContainer, PrimaryButton } from '../../widgets';
+import { PageContainer, PrimaryButton, AnimatedCard } from '../../widgets';
 import { 
-  Plus, CloudSun, Utensils, TrendingUp, Clock, ArrowRight, Bell, Calendar, MapPin, ChevronRight, CalendarCheck
+  Plus, CloudSun, Utensils, TrendingUp, Clock, ArrowRight, Bell, Calendar, MapPin, ChevronRight, CalendarCheck, LayoutDashboard
 } from 'lucide-react';
 import api from '../../utils/services/api';
 import { useAuth } from '../../context/AuthContext';
@@ -32,48 +32,97 @@ const EmployeeDashboardPage: React.FC = () => {
   return (
     <PageContainer className={styles.dashboardBg + ' min-h-screen font-sans antialiased text-slate-900 px-6 py-10 max-w-7xl mx-auto'}>
       {/* HEADER: Karşılama */}
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 mb-8">
-        <div>
-          <h1 className="text-4xl font-black tracking-tight text-slate-900">
-            Merhaba, <span className="text-indigo-600">{user?.firstName || 'Employee'}</span> 👋
-          </h1>
-          <p className="text-slate-500 text-lg mt-2 font-medium">İşte bugün senin için ofisteki gelişmeler.</p>
+      <div style={{
+        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
+        borderRadius: '1.5rem',
+        padding: '2rem 2.5rem',
+        marginBottom: '2rem',
+        position: 'relative',
+        overflow: 'hidden',
+        boxShadow: '0 10px 40px rgba(99, 102, 241, 0.3)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: '16px'
+      }}>
+        {/* Decorative circles */}
+        <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '120px', height: '120px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)' }} />
+        <div style={{ position: 'absolute', bottom: '-30px', left: '20%', width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
+        
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+            <div style={{ background: 'rgba(255,255,255,0.2)', borderRadius: '1rem', padding: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <LayoutDashboard style={{ width: '28px', height: '28px', color: 'white' }} />
+            </div>
+            <h1 style={{ fontSize: '28px', fontWeight: '700', color: 'white', margin: 0 }}>
+              Merhaba, {user?.firstName || 'Employee'} 👋
+            </h1>
+          </div>
+          <p style={{ color: 'rgba(255,255,255,0.85)', marginTop: '4px', fontSize: '14px', marginLeft: '3.5rem' }}>
+            İşte bugün senin için ofisteki gelişmeler.
+          </p>
         </div>
-        <div className="flex items-center gap-10 justify-end">
-          <button className="relative p-3 bg-white rounded-2xl text-slate-400 hover:text-indigo-600 shadow-sm border border-slate-100 transition-all hover:shadow-md"
-          style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }}>
-            <Bell className="w-6 h-6" />
-            <span className="absolute top-3 right-3 w-3 h-3 bg-rose-500 border-2 border-white rounded-full"></span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', position: 'relative', zIndex: 1 }}>
+          <button 
+            style={{ 
+              padding: '0.6rem 0.9rem', 
+              border: 'none', 
+              borderRadius: '0.75rem', 
+              background: 'rgba(255,255,255,0.2)', 
+              cursor: 'pointer', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.4rem', 
+              color: 'white', 
+              fontSize: '0.85rem', 
+              fontWeight: 600,
+              backdropFilter: 'blur(10px)'
+            }}
+          >
+            <Bell style={{ width: '20px', height: '20px' }} />
           </button>
           <PrimaryButton 
             onClick={() => window.location.href='/employee/reservations'}
-            style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600, marginLeft: '2rem' }} 
-            className="!rounded-2xl !py-4 !px-8 !bg-indigo-600 shadow-lg shadow-indigo-200 hover:!bg-indigo-700 transition-all flex items-center gap-3"
+            style={{ 
+              padding: '0.6rem 1rem', 
+              border: 'none', 
+              borderRadius: '0.75rem', 
+              background: 'rgba(255,255,255,0.95)', 
+              cursor: 'pointer', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.5rem', 
+              color: '#6366f1', 
+              fontSize: '0.85rem', 
+              fontWeight: 600,
+              boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+            }}
           >
-            <Plus className="w-5 h-5" /> 
-            <span className="font-bold text-base">Hızlı Rezervasyon</span>
+            <Plus style={{ width: '18px', height: '18px' }} /> 
+            <span>Hızlı Rezervasyon</span>
           </PrimaryButton>
         </div>
-      </header>
+      </div>
 
       {/* STAT ve MEAL KARTLARI */}
       <div className={styles.statGrid} style={{ marginTop: '2rem' }}>
-        <div className={styles.statCard}>
+        <AnimatedCard delay={100} className={styles.statCard}>
           <div className={styles.statIcon}><Calendar size={28} /></div>
           <div className={styles.statInfo}>
             <p className={styles.statTitle}>BUGÜNKÜ REZERVASYONLAR</p>
             <p className={styles.statValue}>{loading ? '0' : todayReservations}</p>
           </div>
-        </div>
-        <div className={styles.statCard}>
+        </AnimatedCard>
+        <AnimatedCard delay={180} className={styles.statCard}>
           <div className={styles.statIcon} style={{background:'#EEF2FF', color:'#6366F1'}}><TrendingUp size={28} /></div>
           <div className={styles.statInfo}>
             <p className={styles.statTitle}>OFİS DOLULUK ORANI</p>
             <p className={styles.statValue}>%64 <span style={{fontSize:13, color:'#10B981', fontWeight:600, marginLeft:8}}>Normal Seviye</span></p>
           </div>
-        </div>
+        </AnimatedCard>
       </div>
-      <div className={styles.mealCard}>
+      <AnimatedCard delay={260} className={styles.mealCard}>
         <div className={styles.mealHeader}>
           <div className={styles.mealTitle}>
             <Utensils size={22} style={{color:'#F43F5E', background:'#FEE2E2', borderRadius:8, padding:4}} /> Haftalık Yemek Menüsü
@@ -89,9 +138,9 @@ const EmployeeDashboardPage: React.FC = () => {
             </div>
           ))}
         </div>
-      </div>
+      </AnimatedCard>
       {/* Yan yana üçlü küçük kart grid */}
-      <div className={styles.sideGrid}>
+      <AnimatedCard delay={340} className={styles.sideGrid}>
         {/* WEATHER */}
         <div className={styles.sideWeather}>
           <div className={styles.sideWeatherInfo}>
@@ -135,7 +184,7 @@ const EmployeeDashboardPage: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </AnimatedCard>
     </PageContainer>
   );
 

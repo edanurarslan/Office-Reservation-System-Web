@@ -186,7 +186,8 @@ const ApprovalPage: React.FC = () => {
     <PageContainer>
       <PageHeader
         title="Onay Gerektiren İşlemler"
-        description="Beklemede olan onayları yönetin."
+        description="Beklemede olan onayları yönetin"
+        icon={<CheckCircle style={{ width: '28px', height: '28px', color: 'white' }} />}
       />
 
       {/* Hata mesajı */}

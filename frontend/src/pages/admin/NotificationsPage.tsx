@@ -165,7 +165,8 @@ const NotificationsPage: React.FC = () => {
     <PageContainer>
       <PageHeader
         title="Bildirim Yönetimi"
-        description="Kullanıcılara toplu bildirim veya duyuru gönderin."
+        description="Kullanıcılara toplu bildirim veya duyuru gönderin"
+        icon={<Bell style={{ width: '28px', height: '28px', color: 'white' }} />}
       />
 
       {error && (

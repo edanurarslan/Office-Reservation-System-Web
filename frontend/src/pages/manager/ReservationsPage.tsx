@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { PageContainer, PageHeader, Table } from '../../widgets';
-import { CheckCircle, XCircle, Clock } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Calendar } from 'lucide-react';
 import type { Reservation as BackendReservation } from '../../types';
 
 // Table display type (decoupled from backend)
@@ -142,6 +142,7 @@ const ManagerReservationsPage: React.FC = () => {
       <PageHeader
         title="Rezervasyon Onayları"
         description="Çalışanların rezervasyon isteklerini yönetin."
+        icon={<Calendar />}
       />
 
       {pendingCount > 0 && (

@@ -134,6 +134,7 @@ const LocationsPage: React.FC = () => {
       <PageHeader
         title="Lokasyonlar"
         description="Tüm ofis lokasyonlarını yönetin."
+        icon={<MapPin />}
       />
 
       <div style={{ marginBottom: '2rem' }}>

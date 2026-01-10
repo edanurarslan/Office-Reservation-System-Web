@@ -248,7 +248,8 @@ const LogsPage: React.FC = () => {
     <PageContainer>
       <PageHeader
         title="Sistem Günlükleri"
-        description="Sistem aktivitesini ve işlemlerini izleyin."
+        description="Sistem aktivitesini ve işlemlerini izleyin"
+        icon={<FileText style={{ width: '28px', height: '28px', color: 'white' }} />}
       />
 
       {stats && (

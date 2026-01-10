@@ -27,7 +27,8 @@ const ReportsPage: React.FC = () => {
     <PageContainer>
       <PageHeader
         title="Raporlar"
-        description="Sistem kullanım istatistikleri ve raporları görüntüleyin."
+        description="Sistem kullanım istatistikleri ve raporları görüntüleyin"
+        icon={<BarChart3 style={{ width: '28px', height: '28px', color: 'white' }} />}
       />
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>

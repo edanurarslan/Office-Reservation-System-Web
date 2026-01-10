@@ -1,9 +1,8 @@
-"use client"
+import React, { useState } from "react"
+import { PageContainer, PageHeader } from '../../widgets';
+import { HelpCircle } from 'lucide-react';
 
-import type React from "react"
-import { useState } from "react"
-
-export default function SupportPage() {
+const SupportPage: React.FC = () => {
   const [subject, setSubject] = useState("")
   const [message, setMessage] = useState("")
   const [sent, setSent] = useState(false)
@@ -26,46 +25,64 @@ export default function SupportPage() {
   }
 
   return (
-    <div className="page-center">
-      <div style={{ width: "100%", maxWidth: 500 }}>
-        <div className="page-glass">
-          <div className="page-title">Destek Talebi</div>
-          <form onSubmit={handleSubmit} style={{ marginTop: "2rem" }}>
+    <PageContainer>
+      <PageHeader
+        title="Destek Talebi"
+        description="Teknik destek veya yardım talebinde bulunun."
+        icon={<HelpCircle />}
+      />
+
+      <div style={{ maxWidth: 500, margin: '0 auto' }}>
+        <div style={{ background: '#fff', borderRadius: '1.5rem', padding: '2rem', boxShadow: '0 8px 32px rgba(31,38,135,0.10)' }}>
+          <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: "1.2rem" }}>
-              <label style={{ fontWeight: 500, color: "#818cf8" }}>Konu</label>
-              <br />
+              <label style={{ fontWeight: 500, color: "#818cf8", display: 'block', marginBottom: '0.5rem' }}>Konu</label>
               <input
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                className="login-custom-input"
                 required
                 placeholder="Konu"
+                style={{ width: '100%', padding: '0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', fontSize: '0.9rem', boxSizing: 'border-box' }}
               />
             </div>
             <div style={{ marginBottom: "1.2rem" }}>
-              <label style={{ fontWeight: 500, color: "#818cf8" }}>Mesaj</label>
-              <br />
+              <label style={{ fontWeight: 500, color: "#818cf8", display: 'block', marginBottom: '0.5rem' }}>Mesaj</label>
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="login-custom-input"
                 required
                 placeholder="Sorununuzu kısaca açıklayın"
-                style={{ minHeight: "80px" }}
+                style={{ width: '100%', padding: '0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', fontSize: '0.9rem', boxSizing: 'border-box', minHeight: "120px", resize: 'vertical' }}
               />
             </div>
             <button
-              className="page-btn"
-              style={{ width: "100%", padding: "0.7rem 1.2rem" }}
               type="submit"
               disabled={loading}
+              style={{
+                width: "100%",
+                padding: "0.75rem 1.5rem",
+                background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '0.75rem',
+                fontSize: '0.95rem',
+                fontWeight: 600,
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.7 : 1
+              }}
             >
               {loading ? "Gönderiliyor..." : "Gönder"}
             </button>
-            {sent && <div style={{ marginTop: "1rem", color: "#22c55e", fontWeight: 600 }}>Talebiniz alınmıştır!</div>}
+            {sent && (
+              <div style={{ marginTop: "1rem", color: "#22c55e", fontWeight: 600, textAlign: 'center' }}>
+                Talebiniz alınmıştır!
+              </div>
+            )}
           </form>
         </div>
       </div>
-    </div>
+    </PageContainer>
   )
 }
+
+export default SupportPage;

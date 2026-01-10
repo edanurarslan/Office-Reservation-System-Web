@@ -86,7 +86,8 @@ const NotificationsPage: React.FC = () => {
     <PageContainer>
       <PageHeader
         title="Bildirimler"
-        description="Tüm bildirimlerinizi görüntüleyin ve yönetin."
+        description="Tüm bildirimlerinizi görüntüleyin ve yönetin"
+        icon={<Bell style={{ width: '28px', height: '28px', color: 'white' }} />}
       />
 
       {unreadCount > 0 && (

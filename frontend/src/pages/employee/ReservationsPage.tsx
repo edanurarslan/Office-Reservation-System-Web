@@ -182,6 +182,7 @@ const EmployeeReservationsPage: React.FC = () => {
       <PageHeader
         title="Rezervasyonlarım"
         description="Kişisel masa/oda rezervasyonlarınızı yönetin."
+        icon={<Calendar />}
       />
 
       <PrimaryButton 

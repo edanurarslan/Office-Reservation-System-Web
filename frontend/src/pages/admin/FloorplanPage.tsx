@@ -264,7 +264,8 @@ const FloorPlanPage: React.FC = () => {
     <PageContainer>
       <PageHeader
         title="Kat Planı Yönetimi"
-        description="Ofis kat planlarını ve masa/oda konumlarını yönetin."
+        description="Ofis kat planlarını ve masa/oda konumlarını yönetin"
+        icon={<Layers style={{ width: '28px', height: '28px', color: 'white' }} />}
       />
 
       {error && (

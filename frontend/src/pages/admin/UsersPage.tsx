@@ -339,7 +339,8 @@ const UsersPage: React.FC = () => {
         <div className={styles.usersMainCard}>
           <PageHeader
             title="Kullanıcı Yönetimi"
-            description="Ekip üyelerini yetkilendirin ve erişim izinlerini kontrol edin."
+            description="Ekip üyelerini yetkilendirin ve erişim izinlerini kontrol edin"
+            icon={<Users style={{ width: '28px', height: '28px', color: 'white' }} />}
             action={
               <PrimaryButton onClick={() => { resetForm(); setIsCreateModalOpen(true); }} className="shadow-lg shadow-blue-200" style={{ width: '97%', padding: '0.6rem 0.75rem', borderRadius: '0.6rem', border: '1.5px solid #e5e7eb', fontSize: '0.85rem', fontFamily: 'inherit', background: '#fff', color: '#312e81', fontWeight: 600 }}>
                 <Plus className="w-4 h-4 mr-2" />

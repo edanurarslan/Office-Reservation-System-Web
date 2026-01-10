@@ -7,7 +7,7 @@ export { default as Sidebar } from './Sidebar';
 export * from './buttons';
 
 // Layout/Card components
-export { GlassCard, DashboardCard, StatCard, PageContainer, PageHeader, ResponsiveGrid, Flex } from './layout/LayoutComponents';
+export { GlassCard, DashboardCard, StatCard, PageContainer, PageHeader, ResponsiveGrid, Flex, AnimatedCard } from './layout/LayoutComponents';
 
 // Form components
 export * from './forms';
@@ -18,3 +18,6 @@ export * from './dialogs';
 // Table component
 export { Table } from './tables';
 export type { Column, TableProps } from './tables';
+
+// Animation components
+export { PageTransition, StaggeredList, FadeIn, SlideIn, ScaleIn } from './animations/PageTransition';

@@ -32,9 +32,10 @@ const ManagerDashboardPage: React.FC = () => {
     <PageContainer>
       <PageHeader
         title="Yönetici Paneli"
-        description="Rezervasyonlar, raporlar ve onay bekleyen işlemler."
+        description="Rezervasyonlar, raporlar ve onay bekleyen işlemler"
+        icon={<LayoutDashboard style={{ width: '28px', height: '28px', color: 'white' }} />}
         action={
-          <div style={{ marginTop: '1.5rem', marginRight: '1.5rem' }}>
+          <div style={{ marginTop: '0.5rem' }}>
             <PrimaryButton 
               onClick={() => {}} 
               style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }}

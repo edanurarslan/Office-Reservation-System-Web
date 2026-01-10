@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PageContainer } from '../../widgets';
+import { PageContainer, AnimatedCard } from '../../widgets';
 import { 
   Users, MapPin, Calendar, TrendingUp, Activity, Clock, 
   CheckCircle, AlertCircle, ArrowUpRight,
@@ -137,12 +137,34 @@ const OverviewPage: React.FC = () => {
     <PageContainer>
       <div style={containerStyle}>
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '16px' }}>
-          <div>
-            <h1 style={{ fontSize: '28px', fontWeight: '700', color: '#1F2937', margin: 0 }}>
-              Hoş Geldiniz, Admin 👋
-            </h1>
-            <p style={{ color: '#6B7280', marginTop: '4px', fontSize: '14px' }}>
+        <div style={{
+          background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
+          borderRadius: '1.5rem',
+          padding: '2rem 2.5rem',
+          marginBottom: '2rem',
+          position: 'relative',
+          overflow: 'hidden',
+          boxShadow: '0 10px 40px rgba(99, 102, 241, 0.3)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '16px'
+        }}>
+          {/* Decorative circles */}
+          <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '120px', height: '120px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)' }} />
+          <div style={{ position: 'absolute', bottom: '-30px', left: '20%', width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
+          
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+              <div style={{ background: 'rgba(255,255,255,0.2)', borderRadius: '1rem', padding: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <BarChart3 style={{ width: '28px', height: '28px', color: 'white' }} />
+              </div>
+              <h1 style={{ fontSize: '28px', fontWeight: '700', color: 'white', margin: 0 }}>
+                Hoş Geldiniz, Admin 👋
+              </h1>
+            </div>
+            <p style={{ color: 'rgba(255,255,255,0.85)', marginTop: '4px', fontSize: '14px', marginLeft: '3.5rem' }}>
               {currentTime.toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
@@ -150,13 +172,15 @@ const OverviewPage: React.FC = () => {
             display: 'flex', 
             alignItems: 'center', 
             gap: '8px', 
-            backgroundColor: '#F3F4F6', 
+            backgroundColor: 'rgba(255,255,255,0.2)', 
             padding: '12px 20px', 
             borderRadius: '12px',
-            border: '1px solid #E5E7EB'
+            backdropFilter: 'blur(10px)',
+            position: 'relative',
+            zIndex: 1
           }}>
-            <Clock style={{ width: '20px', height: '20px', color: '#6366F1' }} />
-            <span style={{ fontSize: '18px', fontWeight: '600', color: '#1F2937', fontFamily: 'monospace' }}>
+            <Clock style={{ width: '20px', height: '20px', color: 'white' }} />
+            <span style={{ fontSize: '18px', fontWeight: '600', color: 'white', fontFamily: 'monospace' }}>
               {currentTime.toLocaleTimeString('tr-TR')}
             </span>
           </div>
@@ -170,8 +194,9 @@ const OverviewPage: React.FC = () => {
           marginBottom: '20px' 
         }}>
           {statCards.map((card, index) => (
-            <div
+            <AnimatedCard
               key={index}
+              delay={index * 80}
               onClick={() => navigate(card.action)}
               style={{
                 ...cardStyle,
@@ -179,15 +204,6 @@ const OverviewPage: React.FC = () => {
                 alignItems: 'center',
                 gap: '16px',
                 cursor: 'pointer',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-4px)';
-                e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(0, 0, 0, 0.15)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
               }}
             >
               <div style={{
@@ -206,7 +222,7 @@ const OverviewPage: React.FC = () => {
                 <p style={{ fontSize: '32px', fontWeight: '700', color: '#1F2937', margin: '4px 0 0 0' }}>{card.value}</p>
               </div>
               <ArrowUpRight style={{ width: '20px', height: '20px', color: '#10B981' }} />
-            </div>
+            </AnimatedCard>
           ))}
         </div>
 
