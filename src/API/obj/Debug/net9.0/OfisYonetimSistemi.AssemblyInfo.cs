@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OfisYonetimSistemi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+571611babecd87e802090b1539c880d50a7297f9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0254082eed87950d3773dc5e122515f1fb7a7d15")]
 [assembly: System.Reflection.AssemblyProductAttribute("OfisYonetimSistemi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OfisYonetimSistemi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

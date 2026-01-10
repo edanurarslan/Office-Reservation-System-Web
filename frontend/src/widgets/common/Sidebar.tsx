@@ -188,11 +188,17 @@ const Sidebar: React.FC = () => {
         <div className="sidebar-user-avatar">
           {user?.firstName?.[0]}{user?.lastName?.[0]}
         </div>
-        <div style={{ minWidth: '0' }}>
-          <div style={{ fontWeight: 600, color: '#6366f1', fontSize: '0.9rem' }}>
+        <div style={{ minWidth: '0', flex: 1 }}>
+          <div style={{ 
+            fontWeight: 600, 
+            fontSize: '0.875rem',
+            background: 'linear-gradient(135deg, #7c3aed, #a855f7)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
             {user?.firstName} {user?.lastName}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#818cf8' }}>
+          <div style={{ fontSize: '0.7rem', color: '#9ca3af', fontWeight: 500 }}>
             {user?.role === UserRole.Admin
               ? 'Yönetici'
               : user?.role === UserRole.Manager
@@ -204,8 +210,33 @@ const Sidebar: React.FC = () => {
 
       <button
         onClick={logout}
-        style={{ padding: '0.5rem 0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#312e81', fontSize: '0.85rem', fontWeight: 600 }}
-        className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition rounded-lg border-t border-indigo-100 text-sm font-medium"
+        style={{ 
+          padding: '0.75rem 1rem', 
+          border: '1px solid rgba(239, 68, 68, 0.2)', 
+          borderRadius: '0.75rem', 
+          background: 'rgba(239, 68, 68, 0.05)', 
+          cursor: 'pointer', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          gap: '0.5rem', 
+          color: '#ef4444', 
+          fontSize: '0.85rem', 
+          fontWeight: 600,
+          marginTop: '0.75rem',
+          width: '100%',
+          transition: 'all 0.25s ease'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = '#ef4444';
+          e.currentTarget.style.color = 'white';
+          e.currentTarget.style.borderColor = 'transparent';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(239, 68, 68, 0.05)';
+          e.currentTarget.style.color = '#ef4444';
+          e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.2)';
+        }}
       >
         <LogOut className="w-4 h-4" />
         <span>Çıkış Yap</span>

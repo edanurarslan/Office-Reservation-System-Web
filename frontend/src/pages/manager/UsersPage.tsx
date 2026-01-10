@@ -240,16 +240,27 @@ const UsersPage: React.FC = () => {
       key: 'name' as keyof UserData,
       header: 'Kullanıcı',
       render: (_value: string, user: UserData) => (
-        <div className="flex items-center gap-4 py-1">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-sm">
-            <span className="text-white text-xs font-bold uppercase">
-              {(user.firstName?.[0] || user.name?.[0])}{(user.lastName?.[0] || user.name?.split(' ')[1]?.[0])}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0' }}>
+          <div style={{ 
+            width: '40px', 
+            height: '40px', 
+            borderRadius: '50%', 
+            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            boxShadow: '0 2px 8px rgba(99, 102, 241, 0.3)'
+          }}>
+            <span style={{ color: 'white', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase' }}>
+              {(user.firstName?.[0] || user.name?.[0] || '')}{(user.lastName?.[0] || '')}
             </span>
           </div>
           <div>
-            <div className="font-semibold text-gray-800">{user.name || (user.firstName + ' ' + user.lastName)}</div>
-            <div className="text-xs text-gray-500 flex items-center gap-1">
-              <Mail className="w-3 h-3" /> {user.email}
+            <div style={{ fontWeight: 600, color: '#1e293b', fontSize: '0.9rem' }}>
+              {user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim()}
+            </div>
+            <div style={{ fontSize: '0.75rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <Mail style={{ width: '12px', height: '12px' }} /> {user.email}
             </div>
           </div>
         </div>
@@ -258,30 +269,59 @@ const UsersPage: React.FC = () => {
     {
       key: 'role' as keyof UserData,
       header: 'Yetki',
-      render: (value: string) => (
-        <span className={'px-3 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider ' + getRoleBadgeColor(value)}>
-          {roleLabels[value?.toLowerCase()] || value}
-        </span>
-      )
+      render: (value: string) => {
+        const roleColors: Record<string, { bg: string; color: string; border: string }> = {
+          admin: { bg: '#fef3c7', color: '#b45309', border: '#fcd34d' },
+          manager: { bg: '#dbeafe', color: '#1d4ed8', border: '#93c5fd' },
+          employee: { bg: '#dcfce7', color: '#166534', border: '#86efac' },
+          user: { bg: '#f1f5f9', color: '#475569', border: '#cbd5e1' },
+          guest: { bg: '#f3e8ff', color: '#7c3aed', border: '#c4b5fd' }
+        };
+        const style = roleColors[value?.toLowerCase()] || roleColors.user;
+        return (
+          <span style={{ 
+            padding: '0.35rem 0.75rem', 
+            borderRadius: '0.5rem', 
+            fontSize: '0.7rem', 
+            fontWeight: 700, 
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+            background: style.bg,
+            color: style.color,
+            border: `1px solid ${style.border}`
+          }}>
+            {roleLabels[value?.toLowerCase()] || value}
+          </span>
+        );
+      }
     },
     {
       key: 'department' as keyof UserData,
       header: 'Departman',
       render: (value: string) => (
-        <div className="flex flex-col">
-            <span className="text-sm font-medium text-gray-700">{value || '-'}</span>
-        </div>
+        <span style={{ fontSize: '0.875rem', color: '#475569', fontWeight: 500 }}>
+          {value || '-'}
+        </span>
       )
     },
     {
       key: 'status' as keyof UserData,
       header: 'Durum',
       render: (value: string) => (
-        <div className="flex items-center gap-2">
-            <span className={`w-2 h-2 rounded-full ${value === 'active' ? 'bg-green-500' : 'bg-rose-500'}`}></span>
-            <span className={'px-2 py-0.5 rounded text-xs font-semibold ' + getStatusBadgeColor(value)}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span style={{ 
+            width: '8px', 
+            height: '8px', 
+            borderRadius: '50%', 
+            background: value === 'active' ? '#10b981' : '#ef4444'
+          }} />
+          <span style={{ 
+            fontSize: '0.8rem', 
+            fontWeight: 600, 
+            color: value === 'active' ? '#059669' : '#dc2626'
+          }}>
             {statusLabels[value] || value}
-            </span>
+          </span>
         </div>
       )
     },
@@ -289,18 +329,44 @@ const UsersPage: React.FC = () => {
       key: 'id' as keyof UserData,
       header: 'Eylemler',
       render: (_value: string, user: UserData) => (
-        <div className="flex items-center gap-1">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <button
             onClick={() => handleEditClick(user)}
-            className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all"
+            style={{
+              padding: '0.5rem',
+              background: '#eef2ff',
+              border: '1px solid #c7d2fe',
+              borderRadius: '0.5rem',
+              color: '#6366f1',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#6366f1'; e.currentTarget.style.color = 'white'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = '#eef2ff'; e.currentTarget.style.color = '#6366f1'; }}
           >
-            <Edit2 className="w-4 h-4" />
+            <Edit2 style={{ width: '16px', height: '16px' }} />
           </button>
           <button
             onClick={() => { setSelectedUser(user); setIsDeleteModalOpen(true); }}
-            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-full transition-all"
+            style={{
+              padding: '0.5rem',
+              background: '#fef2f2',
+              border: '1px solid #fecaca',
+              borderRadius: '0.5rem',
+              color: '#ef4444',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#ef4444'; e.currentTarget.style.color = 'white'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = '#fef2f2'; e.currentTarget.style.color = '#ef4444'; }}
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 style={{ width: '16px', height: '16px' }} />
           </button>
         </div>
       )

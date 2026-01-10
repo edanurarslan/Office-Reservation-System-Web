@@ -33,13 +33,13 @@ const EmployeeDashboardPage: React.FC = () => {
     <PageContainer className={styles.dashboardBg + ' min-h-screen font-sans antialiased text-slate-900 px-6 py-10 max-w-7xl mx-auto'}>
       {/* HEADER: Karşılama */}
       <div style={{
-        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
-        borderRadius: '1.5rem',
+        background: 'linear-gradient(135deg, #8b5cf6 0%, #a78bfa 30%, #c4b5fd 60%, #d8b4fe 100%)',
+        borderRadius: '1.25rem',
         padding: '2rem 2.5rem',
-        marginBottom: '2rem',
+        marginBottom: '1.75rem',
         position: 'relative',
         overflow: 'hidden',
-        boxShadow: '0 10px 40px rgba(99, 102, 241, 0.3)',
+        boxShadow: '0 10px 40px rgba(139, 92, 246, 0.2), 0 4px 15px rgba(139, 92, 246, 0.12)',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -47,19 +47,19 @@ const EmployeeDashboardPage: React.FC = () => {
         gap: '16px'
       }}>
         {/* Decorative circles */}
-        <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '120px', height: '120px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)' }} />
+        <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '120px', height: '120px', borderRadius: '50%', background: 'rgba(255,255,255,0.12)' }} />
         <div style={{ position: 'absolute', bottom: '-30px', left: '20%', width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
         
         <div style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
-            <div style={{ background: 'rgba(255,255,255,0.2)', borderRadius: '1rem', padding: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ background: 'rgba(255,255,255,0.25)', borderRadius: '0.875rem', padding: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.15)' }}>
               <LayoutDashboard style={{ width: '28px', height: '28px', color: 'white' }} />
             </div>
             <h1 style={{ fontSize: '28px', fontWeight: '700', color: 'white', margin: 0 }}>
               Merhaba, {user?.firstName || 'Employee'} 👋
             </h1>
           </div>
-          <p style={{ color: 'rgba(255,255,255,0.85)', marginTop: '4px', fontSize: '14px', marginLeft: '3.5rem' }}>
+          <p style={{ color: 'rgba(255,255,255,0.9)', marginTop: '4px', fontSize: '14px', marginLeft: '3.5rem' }}>
             İşte bugün senin için ofisteki gelişmeler.
           </p>
         </div>

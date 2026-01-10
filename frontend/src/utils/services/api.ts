@@ -429,17 +429,17 @@ class ApiService {
     if (params?.page) queryParams.append('page', params.page.toString());
     if (params?.pageSize) queryParams.append('pageSize', params.pageSize.toString());
     
-    const response = await this.api.get(`/users?${queryParams.toString()}`);
+    const response = await this.api.get(`/v1/users?${queryParams.toString()}`);
     return response.data;
   }
 
   async getUser(id: string): Promise<any> {
-    const response = await this.api.get(`/users/${id}`);
+    const response = await this.api.get(`/v1/users/${id}`);
     return response.data;
   }
 
   async getUserRoles(): Promise<{ value: string; label: string }[]> {
-    const response = await this.api.get('/users/roles');
+    const response = await this.api.get('/v1/users/roles');
     return response.data;
   }
 
@@ -452,7 +452,7 @@ class ApiService {
     jobTitle?: string;
     phoneNumber?: string;
   }): Promise<any> {
-    const response = await this.api.post('/users', data);
+    const response = await this.api.post('/v1/users', data);
     return response.data;
   }
 
@@ -468,12 +468,12 @@ class ApiService {
     phoneNumber?: string;
     isActive?: boolean;
   }): Promise<any> {
-    const response = await this.api.patch(`/users/${id}`, data);
+    const response = await this.api.patch(`/v1/users/${id}`, data);
     return response.data;
   }
 
   async deleteUser(id: string): Promise<void> {
-    await this.api.delete(`/users/${id}`);
+    await this.api.delete(`/v1/users/${id}`);
   }
 
   // Notification methods
